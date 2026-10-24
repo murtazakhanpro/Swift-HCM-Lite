@@ -1,3 +1,13 @@
+<div align="center">
+
+### بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+
+### رَبِّ زِدْنِي عِلْمًا
+
+**Swift-HCM Lite ملازمین، حاضری اور تنخواہوں کے انتظام کے لیے ایک ذہین نظام ہے۔**
+
+</div>
+
 # Swift-HCM Lite
 
 **AI-Assisted Human Capital Management System**
