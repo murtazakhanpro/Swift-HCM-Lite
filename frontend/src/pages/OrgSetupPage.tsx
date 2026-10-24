@@ -180,8 +180,8 @@ export const OrgSetupPage: React.FC = () => {
           alignItems: "center",
           gap: "0.5rem",
           fontSize: "0.85rem",
-          background: notification.type === "success" ? "rgba(68, 248, 25, 0.12)" : "rgba(251, 36, 54, 0.12)",
-          border: `1px solid ${notification.type === "success" ? "rgba(68, 248, 25, 0.3)" : "rgba(251, 36, 54, 0.3)"}`,
+          background: notification.type === "success" ? "rgba(179, 255, 33, 0.12)" : "rgba(255, 51, 68, 0.12)",
+          border: `1px solid ${notification.type === "success" ? "rgba(179, 255, 33, 0.3)" : "rgba(255, 51, 68, 0.3)"}`,
           color: notification.type === "success" ? "var(--status-present)" : "var(--status-absent)"
         }}>
           {notification.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
@@ -384,7 +384,7 @@ export const OrgSetupPage: React.FC = () => {
                     <button
                       onClick={() => handleDeleteDept(dept.id)}
                       className="btn-secondary"
-                      style={{ padding: "0.4rem", color: "#FB2436", borderColor: "rgba(251, 36, 54, 0.3)" }}
+                      style={{ padding: "0.4rem", color: "#FF3344", borderColor: "rgba(255, 51, 68, 0.3)" }}
                       title="Delete Department"
                     >
                       <Trash2 size={16} />

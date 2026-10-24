@@ -151,7 +151,7 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel, canCap
       </div>
 
       {camError ? (
-        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(251,36,54,0.3)", borderRadius: "10px", padding: "1rem", color: "var(--status-absent)", fontSize: "0.85rem" }}>
+        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(255,51,68,0.3)", borderRadius: "10px", padding: "1rem", color: "var(--status-absent)", fontSize: "0.85rem" }}>
           <AlertTriangle size={16} style={{ display: "inline", marginRight: "0.5rem" }} />{camError}
         </div>
       ) : (
@@ -168,7 +168,7 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel, canCap
                 width: "160px", height: "200px",
                 border: `2px solid ${faceStatus === "detected" ? "var(--status-present)" : faceStatus === "none" ? "var(--status-absent)" : "rgba(179,255,33,0.6)"}`,
                 borderRadius: "80px",
-                boxShadow: faceStatus === "detected" ? "0 0 30px rgba(68,248,25,0.5)" : "none",
+                boxShadow: faceStatus === "detected" ? "0 0 30px rgba(179,255,33,0.5)" : "none",
                 transition: "all 0.3s ease",
                 animation: faceStatus === "scanning" ? "pulse 1s infinite" : "none",
               }} />
@@ -467,12 +467,12 @@ const EmployeeAttendanceView: React.FC = () => {
 
       {/* Alerts */}
       {err && (
-        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(251,36,54,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-absent)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(255,51,68,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-absent)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <AlertCircle size={16} />{err}
         </div>
       )}
       {success && (
-        <div style={{ background: "var(--status-present-bg)", border: "1px solid rgba(68,248,25,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-present)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div style={{ background: "var(--status-present-bg)", border: "1px solid rgba(179,255,33,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-present)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <CheckCircle size={16} />{success}
         </div>
       )}
@@ -526,7 +526,7 @@ const EmployeeAttendanceView: React.FC = () => {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                 <div style={{
-                  background: "linear-gradient(135deg, rgba(179,255,33,0.07), rgba(1,90,255,0.07))",
+                  background: "linear-gradient(135deg, rgba(179,255,33,0.07), rgba(0,85,255,0.07))",
                   border: "1px solid rgba(179,255,33,0.15)",
                   borderRadius: "12px", padding: "1.5rem", textAlign: "center",
                 }}>
@@ -792,7 +792,7 @@ const HRAttendanceView: React.FC = () => {
       </div>
 
       {err && (
-        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(251,36,54,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-absent)", fontSize: "0.85rem" }}>
+        <div style={{ background: "var(--status-absent-bg)", border: "1px solid rgba(255,51,68,0.35)", borderRadius: "10px", padding: "0.85rem 1rem", color: "var(--status-absent)", fontSize: "0.85rem" }}>
           <AlertCircle size={14} style={{ display: "inline", marginRight: "0.4rem" }} />{err}
         </div>
       )}
@@ -904,7 +904,7 @@ const HRAttendanceView: React.FC = () => {
                         style={{
                           flex: 1, padding: "0.5rem", borderRadius: "8px", border: "1px solid",
                           cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, transition: "all 0.15s",
-                          background: reviewStatus === "approved" ? "rgba(68,248,25,0.15)" : "transparent",
+                          background: reviewStatus === "approved" ? "rgba(179,255,33,0.15)" : "transparent",
                           borderColor: reviewStatus === "approved" ? "var(--status-present)" : "var(--border-subtle)",
                           color: reviewStatus === "approved" ? "var(--status-present)" : "var(--text-secondary)",
                         }}
@@ -914,7 +914,7 @@ const HRAttendanceView: React.FC = () => {
                         style={{
                           flex: 1, padding: "0.5rem", borderRadius: "8px", border: "1px solid",
                           cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, transition: "all 0.15s",
-                          background: reviewStatus === "rejected" ? "rgba(251,36,54,0.15)" : "transparent",
+                          background: reviewStatus === "rejected" ? "rgba(255,51,68,0.15)" : "transparent",
                           borderColor: reviewStatus === "rejected" ? "var(--status-absent)" : "var(--border-subtle)",
                           color: reviewStatus === "rejected" ? "var(--status-absent)" : "var(--text-secondary)",
                         }}

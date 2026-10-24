@@ -110,11 +110,11 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
         <form onSubmit={handleSubmit} style={{ padding: "1.5rem", overflowY: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
           {error && (
             <div style={{
-              background: "rgba(251, 36, 54, 0.15)",
-              border: "1px solid rgba(251, 36, 54, 0.3)",
+              background: "rgba(255, 51, 68, 0.15)",
+              border: "1px solid rgba(255, 51, 68, 0.3)",
               padding: "0.75rem",
               borderRadius: "8px",
-              color: "#FB2436",
+              color: "#FF3344",
               fontSize: "0.85rem",
               display: "flex",
               alignItems: "center",

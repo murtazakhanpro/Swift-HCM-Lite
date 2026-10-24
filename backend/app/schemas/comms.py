@@ -45,7 +45,7 @@ class AuditLogResponse(BaseModel):
 
 
 class AIQueryRequest(BaseModel):
-    message: str = Field(..., min_length=3, max_length=2000)
+    message: str = Field(..., min_length=1, max_length=2000)
     context: Optional[str] = None
 
 

@@ -135,7 +135,7 @@ export const SetupPage: React.FC = () => {
               </div>
 
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                <div style={{ padding: "0.4rem", borderRadius: "8px", background: "rgba(1, 90, 255, 0.12)", color: "var(--swift-blue)" }}>
+                <div style={{ padding: "0.4rem", borderRadius: "8px", background: "rgba(0, 85, 255, 0.12)", color: "var(--swift-blue)" }}>
                   <Sparkles size={16} />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export const SetupPage: React.FC = () => {
               </div>
 
               <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                <div style={{ padding: "0.4rem", borderRadius: "8px", background: "rgba(202, 164, 125, 0.12)", color: "#CAA47D" }}>
+                <div style={{ padding: "0.4rem", borderRadius: "8px", background: "rgba(194, 166, 122, 0.12)", color: "#C2A67A" }}>
                   <MapPin size={16} />
                 </div>
                 <div>
@@ -170,11 +170,11 @@ export const SetupPage: React.FC = () => {
 
             {error && (
               <div style={{
-                background: "rgba(251, 36, 54, 0.15)",
-                border: "1px solid rgba(251, 36, 54, 0.3)",
+                background: "rgba(255, 51, 68, 0.15)",
+                border: "1px solid rgba(255, 51, 68, 0.3)",
                 padding: "0.75rem",
                 borderRadius: "8px",
-                color: "#FB2436",
+                color: "#FF3344",
                 fontSize: "0.85rem",
                 display: "flex",
                 alignItems: "center",

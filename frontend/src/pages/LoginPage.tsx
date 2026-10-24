@@ -28,7 +28,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div style={{
+    <div className="login-page" style={{
       minHeight: "100vh",
       display: "flex",
       alignItems: "center",
@@ -62,11 +62,11 @@ export const LoginPage: React.FC = () => {
 
         {error && (
           <div style={{
-            background: "rgba(251, 36, 54, 0.15)",
-            border: "1px solid rgba(251, 36, 54, 0.3)",
+            background: "rgba(255, 51, 68, 0.15)",
+            border: "1px solid rgba(255, 51, 68, 0.3)",
             padding: "0.75rem 1rem",
             borderRadius: "8px",
-            color: "#FB2436",
+            color: "#FF3344",
             fontSize: "0.85rem",
             display: "flex",
             alignItems: "center",
@@ -78,7 +78,7 @@ export const LoginPage: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <form className="login-form" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           <div>
             <label style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "0.4rem" }}>
               Work Email Address

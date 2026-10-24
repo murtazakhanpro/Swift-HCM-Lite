@@ -143,7 +143,7 @@ export const DashboardPage: React.FC = () => {
           flexWrap: "wrap",
           gap: "1rem",
           border: "1px solid rgba(179, 255, 33, 0.25)",
-          background: "linear-gradient(135deg, rgba(28, 36, 39, 0.85) 0%, rgba(20, 22, 25, 0.95) 100%)",
+          background: "linear-gradient(135deg, var(--bg-surface-1) 0%, var(--bg-surface-0) 100%)",
           boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4)",
         }}
       >
@@ -205,9 +205,9 @@ export const DashboardPage: React.FC = () => {
         <div className="swift-card">
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
             <span>{user?.role === "Employee" ? "MY ATTENDANCE TODAY" : "ATTENDANCE TODAY"}</span>
-            <CalendarCheck size={18} color="#10b981" />
+            <CalendarCheck size={18} color="#B3FF21" />
           </div>
-          <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#10b981", marginTop: "0.4rem" }}>
+          <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#B3FF21", marginTop: "0.4rem" }}>
             {data ? `${data.attendance.overall_rate_pct}%` : "—"}
           </div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
@@ -326,7 +326,7 @@ export const DashboardPage: React.FC = () => {
               onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border-subtle)")}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <Receipt size={18} color="#10b981" />
+                <Receipt size={18} color="#B3FF21" />
                 <div>
                   <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>Compensation & Payroll Lite</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>1.5x Basic formula, progressive tax slabs, PDF payslips</div>
@@ -461,8 +461,8 @@ export const DashboardPage: React.FC = () => {
                 style={{
                   padding: "0.75rem",
                   borderRadius: 6,
-                  backgroundColor: "rgba(16, 185, 129, 0.15)",
-                  color: "#34d399",
+                  backgroundColor: "rgba(179, 255, 33, 0.15)",
+                  color: "#B3FF21",
                   fontSize: "0.85rem",
                   marginBottom: "1rem",
                   display: "flex",

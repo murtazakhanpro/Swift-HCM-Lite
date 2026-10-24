@@ -93,11 +93,11 @@ export const ChangePasswordModal: React.FC<Props> = ({ isOpen, onSuccess }) => {
 
         {error && (
           <div style={{
-            background: "rgba(251, 36, 54, 0.15)",
-            border: "1px solid rgba(251, 36, 54, 0.3)",
+            background: "rgba(255, 51, 68, 0.15)",
+            border: "1px solid rgba(255, 51, 68, 0.3)",
             padding: "0.75rem",
             borderRadius: "8px",
-            color: "#FB2436",
+            color: "#FF3344",
             fontSize: "0.85rem",
             display: "flex",
             alignItems: "center",

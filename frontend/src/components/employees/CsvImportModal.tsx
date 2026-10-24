@@ -134,11 +134,11 @@ Ali,Raza,ali.raza@company.com,2026-03-01,180000,HR,+923005555555,Lahore
 
           {error && (
             <div style={{
-              background: "rgba(251, 36, 54, 0.15)",
-              border: "1px solid rgba(251, 36, 54, 0.3)",
+              background: "rgba(255, 51, 68, 0.15)",
+              border: "1px solid rgba(255, 51, 68, 0.3)",
               padding: "0.75rem",
               borderRadius: "8px",
-              color: "#FB2436",
+              color: "#FF3344",
               fontSize: "0.85rem",
               display: "flex",
               alignItems: "center",
@@ -215,8 +215,8 @@ Ali,Raza,ali.raza@company.com,2026-03-01,180000,HR,+923005555555,Lahore
               {dryRunResult.can_import ? (
                 <div style={{
                   padding: "0.85rem 1rem",
-                  background: "rgba(68, 248, 25, 0.12)",
-                  border: "1px solid rgba(68, 248, 25, 0.3)",
+                  background: "rgba(179, 255, 33, 0.12)",
+                  border: "1px solid rgba(179, 255, 33, 0.3)",
                   borderRadius: "8px",
                   color: "var(--status-present)",
                   fontSize: "0.85rem",
@@ -231,10 +231,10 @@ Ali,Raza,ali.raza@company.com,2026-03-01,180000,HR,+923005555555,Lahore
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   <div style={{
                     padding: "0.85rem 1rem",
-                    background: "rgba(251, 36, 54, 0.12)",
-                    border: "1px solid rgba(251, 36, 54, 0.3)",
+                    background: "rgba(255, 51, 68, 0.12)",
+                    border: "1px solid rgba(255, 51, 68, 0.3)",
                     borderRadius: "8px",
-                    color: "#FB2436",
+                    color: "#FF3344",
                     fontSize: "0.85rem",
                     display: "flex",
                     alignItems: "center",
@@ -264,7 +264,7 @@ Ali,Raza,ali.raza@company.com,2026-03-01,180000,HR,+923005555555,Lahore
                           <tr key={i} style={{ borderBottom: "1px solid var(--border-subtle)", color: "var(--text-primary)" }}>
                             <td style={{ padding: "0.5rem 0.75rem", fontFamily: "JetBrains Mono" }}>Row {err.row}</td>
                             <td style={{ padding: "0.5rem 0.75rem", color: "var(--swift-neon)", fontFamily: "JetBrains Mono" }}>{err.field}</td>
-                            <td style={{ padding: "0.5rem 0.75rem", color: "#FB2436" }}>{err.reason}</td>
+                            <td style={{ padding: "0.5rem 0.75rem", color: "#FF3344" }}>{err.reason}</td>
                           </tr>
                         ))}
                       </tbody>

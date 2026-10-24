@@ -59,6 +59,10 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
     return () => clearInterval(timer);
   }, [token]);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const markAsRead = async (id: number) => {
     if (!token) return;
     try {
@@ -216,14 +220,14 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
                   borderRadius: "8px",
                   fontSize: "0.85rem",
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "#121316" : "var(--text-secondary)",
+                  color: isActive ? "#111315" : "var(--text-secondary)",
                   backgroundColor: isActive ? "var(--swift-neon)" : "transparent",
                   textDecoration: "none",
                   transition: "all 0.15s ease",
                   boxShadow: isActive ? "0 0 15px rgba(179, 255, 33, 0.25)" : "none",
                 }}
               >
-                <Icon size={18} color={isActive ? "#121316" : undefined} />
+                <Icon size={18} color={isActive ? "#111315" : undefined} />
                 <span>{link.name}</span>
               </Link>
             );
@@ -250,13 +254,52 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
           <button
             onClick={handleLogout}
             className="btn-secondary"
-            style={{ width: "100%", padding: "0.45rem", fontSize: "0.8rem", color: "#FB2436", borderColor: "rgba(251, 36, 54, 0.3)" }}
+            style={{ width: "100%", padding: "0.45rem", fontSize: "0.8rem", color: "#FF3344", borderColor: "rgba(255, 51, 68, 0.3)" }}
           >
             <LogOut size={14} />
             <span>Sign Out</span>
           </button>
         </div>
       </aside>
+
+      {isMobileMenuOpen && (
+        <>
+          <button
+            className="mobile-nav-backdrop"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Close navigation menu"
+          />
+          <aside id="mobile-navigation-drawer" className="mobile-nav-drawer" aria-label="Mobile navigation">
+            <div className="mobile-nav-brand">
+              <img src="/assets/Logo/App_logo_icon.jpg" alt="" />
+              <div><strong>SWIFT-HCM</strong><span>{user?.company_name || "Enterprise Edition"}</span></div>
+              <button className="btn-secondary" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close navigation menu"><X size={18} /></button>
+            </div>
+            <nav className="mobile-nav-links">
+              <span className="mobile-nav-scope">{user?.role} Scope</span>
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`mobile-nav-link${isActive ? " active" : ""}`}
+                  >
+                    <Icon size={18} />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="mobile-nav-footer">
+              <div className="mobile-nav-user">{user?.email}<span className={`badge ${getRoleBadgeClass(user?.role)}`}>{user?.role}</span></div>
+              <button onClick={handleLogout} className="btn-secondary mobile-signout"><LogOut size={15} /> Sign Out</button>
+            </div>
+          </aside>
+        </>
+      )}
 
       {/* Main Container */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -281,6 +324,9 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="btn-secondary mobile-only"
               style={{ padding: "0.4rem", display: "none" }}
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation-drawer"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -416,7 +462,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
         </header>
 
         {/* Content Body */}
-        <main style={{ flex: 1, padding: "1.75rem", overflowY: "auto" }}>
+        <main className="app-main-content" style={{ flex: 1, padding: "1.75rem", overflowY: "auto" }}>
           {children}
         </main>
       </div>

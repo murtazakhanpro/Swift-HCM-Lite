@@ -71,10 +71,10 @@ export const AuditLogsPage: React.FC = () => {
   };
 
   const getActionBadgeColor = (action: string) => {
-    if (action.includes("FINALIZED") || action.includes("APPROVED")) return "#10b981";
-    if (action.includes("DELETE") || action.includes("REJECT")) return "#ef4444";
+    if (action.includes("FINALIZED") || action.includes("APPROVED")) return "#B3FF21";
+    if (action.includes("DELETE") || action.includes("REJECT")) return "#FF3344";
     if (action.includes("CREATE") || action.includes("DRAFT")) return "var(--swift-neon)";
-    return "#3b82f6";
+    return "#0055FF";
   };
 
   return (
@@ -319,16 +319,16 @@ export const AuditLogsPage: React.FC = () => {
             <div style={{ display: "grid", gridTemplateColumns: selectedLog.before_state && selectedLog.after_state ? "1fr 1fr" : "1fr", gap: "1rem" }}>
               {selectedLog.before_state && (
                 <div>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#f87171", marginBottom: "0.35rem" }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#FF3344", marginBottom: "0.35rem" }}>
                     BEFORE STATE
                   </div>
                   <pre
                     style={{
                       padding: "0.75rem",
                       borderRadius: 6,
-                      backgroundColor: "#0d0f11",
+                      backgroundColor: "var(--bg-surface-0)",
                       border: "1px solid var(--border-subtle)",
-                      color: "#a0a5ad",
+                      color: "var(--text-muted)",
                       fontSize: "0.75rem",
                       fontFamily: "JetBrains Mono, monospace",
                       maxHeight: 300,
@@ -350,9 +350,9 @@ export const AuditLogsPage: React.FC = () => {
                     style={{
                       padding: "0.75rem",
                       borderRadius: 6,
-                      backgroundColor: "#0d0f11",
+                      backgroundColor: "var(--bg-surface-0)",
                       border: "1px solid var(--border-subtle)",
-                      color: "#a0a5ad",
+                      color: "var(--text-muted)",
                       fontSize: "0.75rem",
                       fontFamily: "JetBrains Mono, monospace",
                       maxHeight: 300,

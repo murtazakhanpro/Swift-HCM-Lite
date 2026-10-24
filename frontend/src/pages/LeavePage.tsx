@@ -35,7 +35,7 @@ const statusBg: Record<string, string> = {
   pending: "var(--status-late-bg)",
   approved: "var(--status-present-bg)",
   rejected: "var(--status-absent-bg)",
-  cancelled: "rgba(107,114,128,0.1)",
+  cancelled: "rgba(194,166,122,0.1)",
 };
 
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => (
@@ -348,7 +348,7 @@ const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
                     : "rgba(179,255,33,0.07)",
                 border: `1px solid ${
                   daysRequested > (selectedBalance?.days_remaining || 999)
-                    ? "rgba(251,36,54,0.3)"
+                    ? "rgba(255,51,68,0.3)"
                     : "rgba(179,255,33,0.2)"
                 }`,
                 borderRadius: "8px",
@@ -402,7 +402,7 @@ const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({
             <div
               style={{
                 background: "var(--status-absent-bg)",
-                border: "1px solid rgba(251,36,54,0.3)",
+                border: "1px solid rgba(255,51,68,0.3)",
                 borderRadius: "8px",
                 padding: "0.65rem 0.85rem",
                 color: "var(--status-absent)",
@@ -629,7 +629,7 @@ const LeaveRow: React.FC<LeaveRowProps> = ({
             {role === "Employee" && req.status === "pending" && onCancel && (
               <button
                 className="btn-secondary"
-                style={{ fontSize: "0.78rem", color: "var(--status-absent)", borderColor: "rgba(251,36,54,0.3)" }}
+                style={{ fontSize: "0.78rem", color: "var(--status-absent)", borderColor: "rgba(255,51,68,0.3)" }}
                 onClick={() => onCancel(req.id)}
               >
                 <Trash2 size={13} /> Cancel Request
@@ -670,7 +670,7 @@ const LeaveRow: React.FC<LeaveRowProps> = ({
                         flex: 1,
                         fontSize: "0.8rem",
                         color: "var(--status-absent)",
-                        borderColor: "rgba(251,36,54,0.3)",
+                        borderColor: "rgba(255,51,68,0.3)",
                       }}
                       disabled={reviewLoading}
                       onClick={() => onConfirmReview?.(req.id, "rejected")}
@@ -790,7 +790,7 @@ const EmployeeLeaveView: React.FC = () => {
         <div
           style={{
             background: "var(--status-absent-bg)",
-            border: "1px solid rgba(251,36,54,0.3)",
+            border: "1px solid rgba(255,51,68,0.3)",
             borderRadius: "10px",
             padding: "0.8rem 1rem",
             color: "var(--status-absent)",
@@ -808,7 +808,7 @@ const EmployeeLeaveView: React.FC = () => {
         <div
           style={{
             background: "var(--status-present-bg)",
-            border: "1px solid rgba(68,248,25,0.3)",
+            border: "1px solid rgba(179,255,33,0.3)",
             borderRadius: "10px",
             padding: "0.8rem 1rem",
             color: "var(--status-present)",
@@ -835,7 +835,7 @@ const EmployeeLeaveView: React.FC = () => {
                 marginLeft: "0.75rem",
                 background: "var(--status-late-bg)",
                 color: "var(--status-late)",
-                border: "1px solid rgba(253,223,1,0.3)",
+                border: "1px solid rgba(255,208,0,0.3)",
                 borderRadius: "9999px",
                 fontSize: "0.72rem",
                 fontWeight: 700,
@@ -997,7 +997,7 @@ const EmployeeLeaveView: React.FC = () => {
                 onClick={() => setFilterStatus(s)}
                 style={{
                   background: filterStatus === s ? "var(--swift-neon)" : "var(--bg-surface-2)",
-                  color: filterStatus === s ? "#121316" : "var(--text-secondary)",
+                  color: filterStatus === s ? "#111315" : "var(--text-secondary)",
                   border: "1px solid",
                   borderColor: filterStatus === s ? "var(--swift-neon)" : "var(--border-subtle)",
                   borderRadius: "9999px",
@@ -1114,7 +1114,7 @@ const HRLeaveView: React.FC = () => {
         <div
           style={{
             background: "var(--status-absent-bg)",
-            border: "1px solid rgba(251,36,54,0.3)",
+            border: "1px solid rgba(255,51,68,0.3)",
             borderRadius: "10px",
             padding: "0.8rem 1rem",
             color: "var(--status-absent)",
@@ -1132,7 +1132,7 @@ const HRLeaveView: React.FC = () => {
         <div
           style={{
             background: "var(--status-present-bg)",
-            border: "1px solid rgba(68,248,25,0.3)",
+            border: "1px solid rgba(179,255,33,0.3)",
             borderRadius: "10px",
             padding: "0.8rem 1rem",
             color: "var(--status-present)",
@@ -1221,7 +1221,7 @@ const HRLeaveView: React.FC = () => {
               onClick={() => setFilterStatus(s)}
               style={{
                 background: filterStatus === s ? "var(--swift-neon)" : "var(--bg-surface-2)",
-                color: filterStatus === s ? "#121316" : "var(--text-secondary)",
+                color: filterStatus === s ? "#111315" : "var(--text-secondary)",
                 border: "1px solid",
                 borderColor: filterStatus === s ? "var(--swift-neon)" : "var(--border-subtle)",
                 borderRadius: "9999px",
@@ -1238,7 +1238,7 @@ const HRLeaveView: React.FC = () => {
                 <span
                   style={{
                     marginLeft: "0.35rem",
-                    background: "rgba(253,223,1,0.25)",
+                    background: "rgba(255,208,0,0.25)",
                     color: "var(--status-late)",
                     borderRadius: "9999px",
                     padding: "0 0.35rem",

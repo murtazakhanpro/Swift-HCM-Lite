@@ -108,7 +108,7 @@ export const Employee360Page: React.FC = () => {
   if (error || !employee) {
     return (
       <div className="swift-card" style={{ padding: "2.5rem", textAlign: "center" }}>
-        <AlertCircle size={32} color="#FB2436" style={{ margin: "0 auto 1rem" }} />
+        <AlertCircle size={32} color="#FF3344" style={{ margin: "0 auto 1rem" }} />
         <h2 style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}>{error || "Employee not found"}</h2>
         <button onClick={() => navigate("/employees")} className="btn-secondary" style={{ marginTop: "1rem" }}>
           <ArrowLeft size={16} /> Back to Directory
@@ -150,7 +150,7 @@ export const Employee360Page: React.FC = () => {
         flexWrap: "wrap",
         gap: "1.5rem",
         border: "1px solid rgba(179, 255, 33, 0.2)",
-        background: "linear-gradient(135deg, rgba(28, 36, 39, 0.9) 0%, rgba(24, 25, 29, 0.95) 100%)"
+        background: "linear-gradient(135deg, var(--bg-surface-1) 0%, var(--bg-surface-0) 100%)"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
           <img

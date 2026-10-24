@@ -346,10 +346,10 @@ export const PayrollPage: React.FC = () => {
           style={{
             padding: "0.85rem 1.25rem",
             marginBottom: "1.25rem",
-            backgroundColor: "rgba(239, 68, 68, 0.15)",
-            border: "1px solid rgba(239, 68, 68, 0.4)",
+            backgroundColor: "rgba(255, 51, 68, 0.15)",
+            border: "1px solid rgba(255, 51, 68, 0.4)",
             borderRadius: 8,
-            color: "#f87171",
+            color: "#FF3344",
             display: "flex",
             alignItems: "center",
             gap: "0.75rem",
@@ -360,7 +360,7 @@ export const PayrollPage: React.FC = () => {
           <span>{errorMsg}</span>
           <button
             onClick={() => setErrorMsg(null)}
-            style={{ marginLeft: "auto", background: "none", border: "none", color: "#f87171", cursor: "pointer" }}
+            style={{ marginLeft: "auto", background: "none", border: "none", color: "#FF3344", cursor: "pointer" }}
           >
             <X size={16} />
           </button>
@@ -372,10 +372,10 @@ export const PayrollPage: React.FC = () => {
           style={{
             padding: "0.85rem 1.25rem",
             marginBottom: "1.25rem",
-            backgroundColor: "rgba(16, 185, 129, 0.15)",
-            border: "1px solid rgba(16, 185, 129, 0.4)",
+            backgroundColor: "rgba(179, 255, 33, 0.15)",
+            border: "1px solid rgba(179, 255, 33, 0.4)",
             borderRadius: 8,
-            color: "#34d399",
+            color: "#B3FF21",
             display: "flex",
             alignItems: "center",
             gap: "0.75rem",
@@ -386,7 +386,7 @@ export const PayrollPage: React.FC = () => {
           <span>{successMsg}</span>
           <button
             onClick={() => setSuccessMsg(null)}
-            style={{ marginLeft: "auto", background: "none", border: "none", color: "#34d399", cursor: "pointer" }}
+            style={{ marginLeft: "auto", background: "none", border: "none", color: "#B3FF21", cursor: "pointer" }}
           >
             <X size={16} />
           </button>
@@ -421,9 +421,9 @@ export const PayrollPage: React.FC = () => {
             <div className="swift-card">
               <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
                 <span>FINALIZED RUNS</span>
-                <Lock size={18} color="#10b981" />
+                <Lock size={18} color="#B3FF21" />
               </div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#10b981", marginTop: "0.4rem" }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#B3FF21", marginTop: "0.4rem" }}>
                 {summary?.finalized_runs ?? 0}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
@@ -434,9 +434,9 @@ export const PayrollPage: React.FC = () => {
             <div className="swift-card">
               <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
                 <span>DRAFT RUNS</span>
-                <Unlock size={18} color="#f59e0b" />
+                <Unlock size={18} color="#FFD000" />
               </div>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#f59e0b", marginTop: "0.4rem" }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#FFD000", marginTop: "0.4rem" }}>
                 {summary?.draft_runs ?? 0}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
@@ -516,7 +516,7 @@ export const PayrollPage: React.FC = () => {
                           <td style={{ padding: "1rem", color: "var(--text-primary)", fontWeight: 600 }}>
                             {formatPKR(r.total_gross)}
                           </td>
-                          <td style={{ padding: "1rem", color: "#f87171" }}>
+                          <td style={{ padding: "1rem", color: "#FF3344" }}>
                             -{formatPKR(r.total_deductions)}
                           </td>
                           <td style={{ padding: "1rem", color: "var(--swift-neon)", fontWeight: 800 }}>
@@ -533,9 +533,9 @@ export const PayrollPage: React.FC = () => {
                                   borderRadius: 12,
                                   fontSize: "0.75rem",
                                   fontWeight: 700,
-                                  backgroundColor: "rgba(16, 185, 129, 0.15)",
-                                  color: "#34d399",
-                                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                                  backgroundColor: "rgba(179, 255, 33, 0.15)",
+                                  color: "#B3FF21",
+                                  border: "1px solid rgba(179, 255, 33, 0.3)",
                                 }}
                               >
                                 <Lock size={12} />
@@ -551,9 +551,9 @@ export const PayrollPage: React.FC = () => {
                                   borderRadius: 12,
                                   fontSize: "0.75rem",
                                   fontWeight: 700,
-                                  backgroundColor: "rgba(245, 158, 11, 0.15)",
-                                  color: "#fbbf24",
-                                  border: "1px solid rgba(245, 158, 11, 0.3)",
+                                  backgroundColor: "rgba(255, 208, 0, 0.15)",
+                                  color: "#FFD000",
+                                  border: "1px solid rgba(255, 208, 0, 0.3)",
                                 }}
                               >
                                 <Unlock size={12} />
@@ -580,9 +580,9 @@ export const PayrollPage: React.FC = () => {
                                     style={{
                                       padding: "0.35rem 0.75rem",
                                       fontSize: "0.8rem",
-                                      backgroundColor: "rgba(16, 185, 129, 0.2)",
-                                      borderColor: "#10b981",
-                                      color: "#34d399",
+                                      backgroundColor: "rgba(179, 255, 33, 0.2)",
+                                      borderColor: "#B3FF21",
+                                      color: "#B3FF21",
                                       display: "inline-flex",
                                       alignItems: "center",
                                       gap: "0.35rem",
@@ -597,8 +597,8 @@ export const PayrollPage: React.FC = () => {
                                     onClick={() => handleDeleteRun(r.id, r.month_year)}
                                     style={{
                                       background: "none",
-                                      border: "1px solid rgba(239, 68, 68, 0.3)",
-                                      color: "#f87171",
+                                      border: "1px solid rgba(255, 51, 68, 0.3)",
+                                      color: "#FF3344",
                                       borderRadius: 6,
                                       padding: "0.35rem",
                                       cursor: "pointer",
@@ -646,11 +646,11 @@ export const PayrollPage: React.FC = () => {
                   >
                     <span>Run Details: {selectedRun.month_year}</span>
                     {selectedRun.status === "finalized" ? (
-                      <span style={{ fontSize: "0.75rem", color: "#34d399", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                      <span style={{ fontSize: "0.75rem", color: "#B3FF21", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
                         <Lock size={14} /> Locked
                       </span>
                     ) : (
-                      <span style={{ fontSize: "0.75rem", color: "#fbbf24", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                      <span style={{ fontSize: "0.75rem", color: "#FFD000", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
                         <Unlock size={14} /> Draft
                       </span>
                     )}
@@ -724,11 +724,11 @@ export const PayrollPage: React.FC = () => {
                               <div>
                                 {p.absent_days} abs • {p.half_days} half • {p.unpaid_leave_days} unpaid lv
                               </div>
-                              <div style={{ fontSize: "0.75rem", color: p.late_count >= 3 ? "#f59e0b" : "var(--text-muted)" }}>
+                              <div style={{ fontSize: "0.75rem", color: p.late_count >= 3 ? "#FFD000" : "var(--text-muted)" }}>
                                 {p.late_count} lates {p.late_count >= 3 ? "(Penalty applied)" : ""}
                               </div>
                             </td>
-                            <td style={{ padding: "0.75rem", color: "#f87171", fontWeight: 600 }}>
+                            <td style={{ padding: "0.75rem", color: "#FF3344", fontWeight: 600 }}>
                               -{formatPKR(totalDed)}
                               <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
                                 Tax: {formatPKR(p.income_tax)} | Att: {formatPKR(p.absence_deduction + p.late_penalty_deduction)}
@@ -782,9 +782,9 @@ export const PayrollPage: React.FC = () => {
                       borderRadius: 12,
                       fontSize: "0.75rem",
                       fontWeight: 700,
-                      backgroundColor: "rgba(16, 185, 129, 0.15)",
-                      color: "#34d399",
-                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      backgroundColor: "rgba(179, 255, 33, 0.15)",
+                      color: "#B3FF21",
+                      border: "1px solid rgba(179, 255, 33, 0.3)",
                       marginBottom: "0.5rem",
                     }}
                   >
@@ -840,7 +840,7 @@ export const PayrollPage: React.FC = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>TOTAL DEDUCTIONS</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#f87171", marginTop: "0.25rem" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#FF3344", marginTop: "0.25rem" }}>
                     -{formatPKR(myPayslips[0].absence_deduction + myPayslips[0].late_penalty_deduction + myPayslips[0].income_tax)}
                   </div>
                 </div>
@@ -920,7 +920,7 @@ export const PayrollPage: React.FC = () => {
                         <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--swift-neon)" }}>
                           {formatPKR(p.net_salary)}
                         </div>
-                        <div style={{ fontSize: "0.7rem", color: "#34d399" }}>Finalized</div>
+                        <div style={{ fontSize: "0.7rem", color: "#B3FF21" }}>Finalized</div>
                       </div>
                       <ChevronRight size={18} color="var(--text-muted)" />
                     </div>
@@ -1066,11 +1066,11 @@ export const PayrollPage: React.FC = () => {
             style={{
               maxWidth: 480,
               width: "100%",
-              border: "1px solid rgba(16, 185, 129, 0.5)",
+              border: "1px solid rgba(179, 255, 33, 0.5)",
               animation: "fadeIn 0.2s ease-out",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#34d399" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", color: "#B3FF21" }}>
               <ShieldAlert size={28} />
               <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-primary)" }}>
                 Lock & Finalize Payroll
@@ -1086,9 +1086,9 @@ export const PayrollPage: React.FC = () => {
               style={{
                 padding: "0.85rem",
                 borderRadius: 8,
-                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                color: "#fca5a5",
+                backgroundColor: "rgba(255, 51, 68, 0.1)",
+                border: "1px solid rgba(255, 51, 68, 0.3)",
+                color: "#FF3344",
                 fontSize: "0.8rem",
                 marginBottom: "1.5rem",
               }}
@@ -1112,8 +1112,8 @@ export const PayrollPage: React.FC = () => {
                 className="btn-swift-primary"
                 disabled={submitting}
                 style={{
-                  backgroundColor: "#10b981",
-                  borderColor: "#10b981",
+                  backgroundColor: "#B3FF21",
+                  borderColor: "#B3FF21",
                   color: "#000",
                   fontWeight: 800,
                   display: "flex",
@@ -1150,7 +1150,7 @@ export const PayrollPage: React.FC = () => {
             style={{
               maxWidth: 720,
               width: "100%",
-              backgroundColor: "#141715",
+              backgroundColor: "#111315",
               border: "1px solid var(--border-subtle)",
               borderRadius: 12,
               padding: "2rem",
@@ -1288,8 +1288,8 @@ export const PayrollPage: React.FC = () => {
                   <div
                     style={{
                       padding: "0.5rem 0.75rem",
-                      backgroundColor: "rgba(239, 68, 68, 0.08)",
-                      color: "#f87171",
+                      backgroundColor: "rgba(255, 51, 68, 0.08)",
+                      color: "#FF3344",
                       fontWeight: 700,
                       fontSize: "0.85rem",
                       borderRadius: "6px 6px 0 0",
@@ -1301,19 +1301,19 @@ export const PayrollPage: React.FC = () => {
                   <div style={{ border: "1px solid var(--border-subtle)", borderTop: "none", borderRadius: "0 0 6px 6px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0.75rem", fontSize: "0.85rem", borderBottom: "1px solid var(--border-subtle)" }}>
                       <span style={{ color: "var(--text-secondary)" }}>Absence Deductions</span>
-                      <span style={{ color: "#f87171" }}>-{formatPKR(selectedPayslip.absence_deduction)}</span>
+                      <span style={{ color: "#FF3344" }}>-{formatPKR(selectedPayslip.absence_deduction)}</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0.75rem", fontSize: "0.85rem", borderBottom: "1px solid var(--border-subtle)" }}>
                       <span style={{ color: "var(--text-secondary)" }}>Late Penalty (3:0.5d)</span>
-                      <span style={{ color: "#f87171" }}>-{formatPKR(selectedPayslip.late_penalty_deduction)}</span>
+                      <span style={{ color: "#FF3344" }}>-{formatPKR(selectedPayslip.late_penalty_deduction)}</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0.75rem", fontSize: "0.85rem", borderBottom: "1px solid var(--border-subtle)" }}>
                       <span style={{ color: "var(--text-secondary)" }}>Income Tax Withheld</span>
-                      <span style={{ color: "#f87171" }}>-{formatPKR(selectedPayslip.income_tax)}</span>
+                      <span style={{ color: "#FF3344" }}>-{formatPKR(selectedPayslip.income_tax)}</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", padding: "0.75rem", fontSize: "0.9rem", fontWeight: 800, backgroundColor: "rgba(255, 255, 255, 0.02)" }}>
-                      <span style={{ color: "#f87171" }}>TOTAL DEDUCTIONS</span>
-                      <span style={{ color: "#f87171" }}>
+                      <span style={{ color: "#FF3344" }}>TOTAL DEDUCTIONS</span>
+                      <span style={{ color: "#FF3344" }}>
                         -{formatPKR(selectedPayslip.absence_deduction + selectedPayslip.late_penalty_deduction + selectedPayslip.income_tax)}
                       </span>
                     </div>

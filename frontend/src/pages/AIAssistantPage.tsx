@@ -100,7 +100,17 @@ I can answer company policy questions, compute leave balances, analyze workforce
       });
 
       if (!res.ok) {
-        throw new Error("Unable to connect to AI Assistant service.");
+        if (res.status === 401) {
+          throw new Error("Your session has expired. Sign in again, then retry your question.");
+        }
+        let message = `AI request failed (${res.status}).`;
+        try {
+          const errorBody = await res.json();
+          const detail = errorBody?.detail;
+          if (typeof detail === "string") message = detail;
+          else if (Array.isArray(detail)) message = detail.map((item) => item.msg || "Invalid request").join("; ");
+        } catch { /* keep the HTTP status message */ }
+        throw new Error(message);
       }
 
       const data = await res.json();
@@ -159,7 +169,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
   };
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "1.5rem 1rem", height: "calc(100vh - 4.5rem)", display: "flex", flexDirection: "column" }}>
+    <div className="ai-page" style={{ maxWidth: 1100, margin: "0 auto", padding: "1.5rem 1rem", height: "calc(100vh - 4.5rem)", display: "flex", flexDirection: "column" }}>
       {/* Header bar */}
       <div
         style={{
@@ -222,7 +232,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
 
       {/* Chat Messages Canvas */}
       <div
-        className="swift-card"
+        className="swift-card ai-chat-messages"
         style={{
           flex: 1,
           overflowY: "auto",
@@ -231,7 +241,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
           flexDirection: "column",
           gap: "1rem",
           marginBottom: "1rem",
-          backgroundColor: "rgba(20, 22, 25, 0.6)",
+          backgroundColor: "var(--bg-surface-0)",
         }}
       >
         {messages.map((msg) => {
@@ -267,7 +277,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    backgroundColor: isUser ? "rgba(1, 90, 255, 0.2)" : "rgba(179, 255, 33, 0.15)",
+                    backgroundColor: isUser ? "rgba(0, 85, 255, 0.2)" : "rgba(179, 255, 33, 0.15)",
                     border: isUser ? "1px solid var(--swift-blue)" : "1px solid var(--swift-neon)",
                     color: isUser ? "var(--swift-blue)" : "var(--swift-neon)",
                   }}
@@ -282,8 +292,8 @@ I can answer company policy questions, compute leave balances, analyze workforce
                     borderRadius: 12,
                     fontSize: "0.875rem",
                     lineHeight: 1.5,
-                    backgroundColor: isUser ? "rgba(1, 90, 255, 0.15)" : "rgba(28, 36, 39, 0.9)",
-                    border: isUser ? "1px solid rgba(1, 90, 255, 0.35)" : "1px solid var(--border-subtle)",
+                    backgroundColor: isUser ? "rgba(0, 85, 255, 0.15)" : "var(--bg-surface-1)",
+                    border: isUser ? "1px solid rgba(0, 85, 255, 0.35)" : "1px solid var(--border-subtle)",
                     color: "var(--text-primary)",
                   }}
                 >
@@ -319,11 +329,11 @@ I can answer company policy questions, compute leave balances, analyze workforce
                       style={{
                         padding: "0.65rem",
                         borderRadius: 6,
-                        backgroundColor: "#0d0f11",
+                        backgroundColor: "var(--bg-surface-0)",
                         border: "1px solid var(--border-subtle)",
                         fontSize: "0.725rem",
                         fontFamily: "JetBrains Mono, monospace",
-                        color: "#a0a5ad",
+                        color: "var(--text-muted)",
                         marginBottom: "0.75rem",
                         maxHeight: 200,
                         overflowY: "auto",
@@ -380,7 +390,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
       </div>
 
       {/* Suggested Quick Prompts */}
-      <div style={{ display: "flex", gap: "0.5rem", overflowX: "auto", paddingBottom: "0.65rem", marginBottom: "0.5rem" }}>
+      <div className="ai-quick-prompts" style={{ display: "flex", gap: "0.5rem", overflowX: "auto", paddingBottom: "0.65rem", marginBottom: "0.5rem" }}>
         {quickPrompts.map((prompt, i) => (
           <button
             key={i}
@@ -421,6 +431,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
           e.preventDefault();
           handleSendMessage();
         }}
+        className="ai-composer"
         style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
       >
         <input
