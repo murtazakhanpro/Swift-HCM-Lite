@@ -1,5 +1,94 @@
 const API_BASE = "http://localhost:8000/api/v1";
 
+// ── ATTENDANCE TYPES ─────────────────────────────────────────────────────────
+export interface AttendanceRecord {
+  id: number;
+  employee_id: number;
+  employee_code: string;
+  employee_name: string;
+  department_name?: string | null;
+  date: string;
+  check_in_time?: string | null;
+  check_out_time?: string | null;
+  total_hours: number;
+  status: string; // present | late | half_day | absent | missing_checkout
+  check_in_source: string;
+  check_in_lat?: number | null;
+  check_in_lng?: number | null;
+  face_verified: boolean;
+}
+
+export interface TodayStatusResponse {
+  has_checked_in: boolean;
+  has_checked_out: boolean;
+  record?: AttendanceRecord | null;
+  office_lat: number;
+  office_lng: number;
+  office_radius_meters: number;
+}
+
+export interface DailyBoardSummary {
+  date: string;
+  total_active_employees: number;
+  present_today: number;
+  late_today: number;
+  half_day_today: number;
+  missing_checkout_today: number;
+  records: AttendanceRecord[];
+}
+
+export interface AttendanceCorrectionRequest {
+  id: number;
+  employee_id: number;
+  employee_name: string;
+  employee_code: string;
+  requested_date: string;
+  requested_check_in: string;
+  requested_check_out?: string | null;
+  reason: string;
+  status: string; // pending | approved | rejected
+  reviewed_by?: number | null;
+  review_comment?: string | null;
+  created_at: string;
+  reviewed_at?: string | null;
+}
+
+// ── LEAVE TYPES ───────────────────────────────────────────────────────────────
+export interface LeaveRequest {
+  id: number;
+  employee_id: number;
+  employee_name: string;
+  employee_code: string;
+  leave_type_id: number;
+  leave_type: { id: number; name: string; code: string; annual_quota: number; is_unpaid: boolean };
+  start_date: string;
+  end_date: string;
+  total_days: number;
+  reason: string;
+  status: string; // pending | approved | rejected | cancelled
+  reviewed_by?: number | null;
+  reviewer_comment?: string | null;
+  created_at: string;
+  reviewed_at?: string | null;
+}
+
+export interface LeaveBalanceItem {
+  leave_type_id: number;
+  leave_type_name: string;
+  leave_type_code: string;
+  annual_quota: number;
+  days_taken: number;
+  days_remaining: number;
+  is_unpaid: boolean;
+}
+
+export interface LeaveBalanceResponse {
+  employee_id: number;
+  employee_name: string;
+  year: number;
+  balances: LeaveBalanceItem[];
+}
+
 export interface User {
   id: number;
   email: string;
@@ -318,6 +407,120 @@ class ApiService {
     if (!res.ok) throw new Error("Failed to export employees CSV");
     return res.blob();
   }
+
+  // ── ATTENDANCE (Module 4) ──────────────────────────────────────────────────
+  async getTodayAttendanceStatus(): Promise<TodayStatusResponse> {
+    return this.request<TodayStatusResponse>("/attendance/today-status");
+  }
+
+  async checkIn(payload: {
+    source: "web" | "camera";
+    latitude?: number;
+    longitude?: number;
+    gps_accuracy?: number;
+    face_detected?: boolean;
+    faces_count?: number;
+  }): Promise<AttendanceRecord> {
+    return this.request<AttendanceRecord>("/attendance/check-in", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async checkOut(payload: { latitude?: number; longitude?: number }): Promise<AttendanceRecord> {
+    return this.request<AttendanceRecord>("/attendance/check-out", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getDailyAttendanceBoard(targetDate?: string): Promise<DailyBoardSummary> {
+    const q = targetDate ? `?target_date=${targetDate}` : "";
+    return this.request<DailyBoardSummary>(`/attendance/daily-board${q}`);
+  }
+
+  async getAttendanceHistory(params: {
+    employee_id?: number;
+    start_date?: string;
+    end_date?: string;
+  } = {}): Promise<AttendanceRecord[]> {
+    const q = new URLSearchParams();
+    if (params.employee_id) q.append("employee_id", params.employee_id.toString());
+    if (params.start_date) q.append("start_date", params.start_date);
+    if (params.end_date) q.append("end_date", params.end_date);
+    return this.request<AttendanceRecord[]>(`/attendance/history?${q.toString()}`);
+  }
+
+  async requestAttendanceCorrection(payload: {
+    requested_date: string;
+    requested_check_in: string;
+    requested_check_out?: string;
+    reason: string;
+  }): Promise<AttendanceCorrectionRequest> {
+    return this.request<AttendanceCorrectionRequest>("/attendance/corrections", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async listAttendanceCorrections(): Promise<AttendanceCorrectionRequest[]> {
+    return this.request<AttendanceCorrectionRequest[]>("/attendance/corrections");
+  }
+
+  async reviewAttendanceCorrection(
+    correctionId: number,
+    payload: { status: "approved" | "rejected"; review_comment?: string }
+  ): Promise<AttendanceCorrectionRequest> {
+    return this.request<AttendanceCorrectionRequest>(`/attendance/corrections/${correctionId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  // ── LEAVE MANAGEMENT (Module 5) ───────────────────────────────────────────
+  async applyLeave(payload: {
+    leave_type_id: number;
+    start_date: string;
+    end_date: string;
+    reason: string;
+  }): Promise<LeaveRequest> {
+    return this.request<LeaveRequest>("/leave", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async listLeaveRequests(params: {
+    employee_id?: number;
+    status?: string;
+    year?: number;
+  } = {}): Promise<LeaveRequest[]> {
+    const q = new URLSearchParams();
+    if (params.employee_id) q.append("employee_id", params.employee_id.toString());
+    if (params.status) q.append("status", params.status);
+    if (params.year) q.append("year", params.year.toString());
+    return this.request<LeaveRequest[]>(`/leave?${q.toString()}`);
+  }
+
+  async getLeaveBalance(employeeId: number, year?: number): Promise<LeaveBalanceResponse> {
+    const q = year ? `?year=${year}` : "";
+    return this.request<LeaveBalanceResponse>(`/leave/balance/${employeeId}${q}`);
+  }
+
+  async reviewLeaveRequest(
+    leaveId: number,
+    payload: { status: "approved" | "rejected"; reviewer_comment?: string }
+  ): Promise<LeaveRequest> {
+    return this.request<LeaveRequest>(`/leave/${leaveId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async cancelLeaveRequest(leaveId: number): Promise<void> {
+    return this.request<void>(`/leave/${leaveId}`, { method: "DELETE" });
+  }
 }
 
 export const api = new ApiService();
+

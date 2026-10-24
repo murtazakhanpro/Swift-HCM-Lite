@@ -8,6 +8,7 @@ import app.models  # Ensures all ORM models are registered
 from app.api.v1.auth import router as auth_router
 from app.api.v1.org import router as org_router
 from app.api.v1.employees import router as employees_router
+from app.api.v1.attendance import router as attendance_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -46,6 +47,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(org_router, prefix="/api/v1")
 app.include_router(employees_router, prefix="/api/v1")
+app.include_router(attendance_router, prefix="/api/v1")
 
 @app.get("/api/v1/health", tags=["Health"])
 async def health_check():
