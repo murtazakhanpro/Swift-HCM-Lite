@@ -254,3 +254,37 @@ code, pre {
   background: rgba(202, 164, 125, 0.12);
   border: 1px solid rgba(202, 164, 125, 0.3);
 }
+
+.badge-halfday {
+  color: var(--status-halfday);
+  background: var(--status-halfday-bg);
+  border: 1px solid rgba(255, 152, 0, 0.25);
+}
+
+/* Responsive helpers */
+@media (max-width: 768px) {
+  .hidden-mobile { display: none !important; }
+  .mobile-only { display: flex !important; }
+}
+
+@media (min-width: 769px) {
+  .mobile-only { display: none !important; }
+}
+
+/* Utility Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(179,255,33,0.4); }
+  50%  { opacity: 0.6; box-shadow: 0 0 25px rgba(179,255,33,0.8); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.3s ease forwards; }
