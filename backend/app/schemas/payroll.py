@@ -49,3 +49,16 @@ class PayslipResponse(BaseModel):
 
 class PayrollFinalizeRequest(BaseModel):
     confirm: bool = True
+
+
+class PayrollRunDetailResponse(PayrollRunResponse):
+    payslips: List[PayslipResponse] = []
+
+
+class PayrollSummaryResponse(BaseModel):
+    total_runs: int
+    draft_runs: int
+    finalized_runs: int
+    latest_month: Optional[str] = None
+    latest_net_payout: float = 0.0
+    latest_employee_count: int = 0

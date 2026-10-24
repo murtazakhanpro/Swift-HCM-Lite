@@ -288,3 +288,28 @@ code, pre {
 }
 
 .animate-fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* Print styling for Payslips */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-payslip, #printable-payslip * {
+    visibility: visible;
+  }
+  #printable-payslip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000 !important;
+    background: #fff !important;
+    padding: 20px;
+  }
+  #printable-payslip h2,
+  #printable-payslip strong,
+  #printable-payslip span,
+  #printable-payslip div {
+    color: #000 !important;
+  }
+}
