@@ -50,3 +50,7 @@ dist-ssr
 .vscode/
 .idea/
 Thumbs.db
+
+# Vsuals
+*.public
+.Saylani_Hackathon_HCM_Lite_Brief.pdf

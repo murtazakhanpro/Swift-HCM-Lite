@@ -10,6 +10,8 @@ import { Employee360Page } from "./pages/Employee360Page";
 import { AttendancePage } from "./pages/AttendancePage";
 import { LeavePage } from "./pages/LeavePage";
 import { PayrollPage } from "./pages/PayrollPage";
+import { AIAssistantPage } from "./pages/AIAssistantPage";
+import { AuditLogsPage } from "./pages/AuditLogsPage";
 import { AppLayout } from "./components/layout/AppLayout";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -128,6 +130,22 @@ export const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <PayrollPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-assistant"
+            element={
+              <ProtectedRoute>
+                <AIAssistantPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/audit-logs"
+            element={
+              <ProtectedRoute>
+                <AuditLogsPage />
               </ProtectedRoute>
             }
           />

@@ -95,6 +95,6 @@ python -m pytest backend/tests/ -v
 | **M4: Attendance** | Web Check-In/Out, GPS Geofence Haversine, Face Detection | All Roles (Scoped) | ✅ Completed & Verified |
 | **M5: Leave Engine** | Quotas, Overlap Checks, HR Approval Inbox, Balance Dials | HR (Approve), Employee (Apply) | ✅ Completed & Verified |
 | **M6: Payroll Lite** | Salary Formula (1.5x), Tax Slabs, Deductions, Draft → Finalize | Admin (Lock), HR (Draft), Emp | ✅ Completed & Verified |
-| **M7: AI Assistant** | 7 Scoped Tools, Policy Q&A, Grounded Gemini Responses | All Roles (Scoped) | 🔄 In Progress |
-| **M8: Comms & Audit**| Announcements, Notifications, Immutable Audit Trail | Role Scoped | 🔄 In Progress |
-| **M9: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | 📋 Planned |
+| **M7: AI Assistant** | 7 Scoped Tools, Policy Q&A, Grounded Gemini Responses | All Roles (Scoped) | ✅ Completed & Verified |
+| **M8: Comms & Audit**| Announcements, Notifications, Immutable Audit Trail | Role Scoped | ✅ Completed & Verified |
+| **M9: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | 🔄 In Progress |

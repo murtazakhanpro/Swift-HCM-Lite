@@ -11,6 +11,8 @@ from app.api.v1.employees import router as employees_router
 from app.api.v1.attendance import router as attendance_router
 from app.api.v1.leave import router as leave_router
 from app.api.v1.payroll import router as payroll_router
+from app.api.v1.ai import router as ai_router
+from app.api.v1.comms import router as comms_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -52,6 +54,8 @@ app.include_router(employees_router, prefix="/api/v1")
 app.include_router(attendance_router, prefix="/api/v1")
 app.include_router(leave_router, prefix="/api/v1")
 app.include_router(payroll_router, prefix="/api/v1")
+app.include_router(ai_router, prefix="/api/v1")
+app.include_router(comms_router, prefix="/api/v1")
 
 @app.get("/api/v1/health", tags=["Health"])
 async def health_check():

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -14,17 +14,79 @@ import {
   X,
   Bell,
   Clock,
-  Sparkles
+  Sparkles,
+  Check,
+  CheckCheck
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { ChangePasswordModal } from "../common/ChangePasswordModal";
 
+interface AppNotification {
+  id: number;
+  title: string;
+  message: string;
+  type: string;
+  is_read: boolean;
+  created_at: string;
+}
+
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(user?.must_change_password || false);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+
+  const fetchNotifications = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/v1/comms/notifications?limit=15", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const timer = setInterval(fetchNotifications, 30000); // 30s poll
+    return () => clearInterval(timer);
+  }, [token]);
+
+  const markAsRead = async (id: number) => {
+    if (!token) return;
+    try {
+      await fetch(`http://127.0.0.1:8000/api/v1/comms/notifications/${id}/read`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    } catch {
+      // ignore
+    }
+  };
+
+  const markAllRead = async () => {
+    if (!token) return;
+    try {
+      await fetch("http://127.0.0.1:8000/api/v1/comms/notifications/read-all", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    } catch {
+      // ignore
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const getRoleAvatar = (role?: string) => {
     switch (role) {
@@ -238,12 +300,115 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <div style={{ position: "relative" }}>
               <button
+                onClick={() => setShowNotifDropdown(!showNotifDropdown)}
                 className="btn-secondary"
-                style={{ padding: "0.5rem", borderRadius: "8px" }}
+                style={{ padding: "0.5rem", borderRadius: "8px", position: "relative" }}
                 title="Notifications"
               >
                 <Bell size={18} />
+                {unreadCount > 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-4px",
+                      right: "-4px",
+                      backgroundColor: "var(--swift-neon)",
+                      color: "#000",
+                      fontSize: "0.65rem",
+                      fontWeight: 800,
+                      borderRadius: "10px",
+                      padding: "1px 5px",
+                      minWidth: "16px",
+                      textAlign: "center",
+                      boxShadow: "0 0 8px rgba(179, 255, 33, 0.6)",
+                    }}
+                  >
+                    {unreadCount}
+                  </span>
+                )}
               </button>
+
+              {/* Dropdown Menu */}
+              {showNotifDropdown && (
+                <div
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "calc(100% + 8px)",
+                    width: 340,
+                    maxHeight: 420,
+                    overflowY: "auto",
+                    backgroundColor: "var(--bg-surface-1)",
+                    border: "1px solid var(--border-subtle)",
+                    borderRadius: 10,
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.6)",
+                    zIndex: 100,
+                    padding: "0.75rem",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "0.5rem", borderBottom: "1px solid var(--border-subtle)", marginBottom: "0.5rem" }}>
+                    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary)" }}>
+                      NOTIFICATIONS ({unreadCount} new)
+                    </span>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllRead}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "var(--swift-neon)",
+                          fontSize: "0.7rem",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <CheckCheck size={12} />
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: "1.5rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                      No notifications yet
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                      {notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          onClick={() => markAsRead(n.id)}
+                          style={{
+                            padding: "0.6rem 0.75rem",
+                            borderRadius: 6,
+                            backgroundColor: n.is_read ? "transparent" : "rgba(179, 255, 33, 0.05)",
+                            border: n.is_read ? "1px solid transparent" : "1px solid rgba(179, 255, 33, 0.2)",
+                            cursor: "pointer",
+                            transition: "background 0.15s",
+                          }}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                            <div style={{ fontSize: "0.8rem", fontWeight: n.is_read ? 500 : 700, color: n.is_read ? "var(--text-secondary)" : "var(--text-primary)" }}>
+                              {n.title}
+                            </div>
+                            {!n.is_read && (
+                              <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "var(--swift-neon)", marginTop: 4 }} />
+                            )}
+                          </div>
+                          <div style={{ fontSize: "0.725rem", color: "var(--text-muted)", marginTop: "0.2rem", lineHeight: 1.3 }}>
+                            {n.message}
+                          </div>
+                          <div style={{ fontSize: "0.65rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
+                            {new Date(n.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <span className={`badge ${getRoleBadgeClass(user?.role)}`}>
               {user?.role}
