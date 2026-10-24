@@ -93,8 +93,8 @@ python -m pytest backend/tests/ -v
 | **M2: Org Setup** | Company Settings, Departments, Designations, Holidays, Quotas | Admin (Manage), HR (View) | ✅ Completed & Verified |
 | **M3: Employees** | Directory, Search & Filter, Employee 360, Dry-Run CSV Pipeline | HR (Manage), Employee (Self-Edit) | ✅ Completed & Verified |
 | **M4: Attendance** | Web Check-In/Out, GPS Geofence Haversine, Face Detection | All Roles (Scoped) | ✅ Completed & Verified |
-| **M5: Leave Engine** | Quotas, Overlap Checks, HR Approval Inbox, Smart Leave NLP | HR (Approve), Employee (Apply) | 📋 Planned |
-| **M6: Payroll Lite** | Salary Formula (1.5x), Tax Slabs, Deductions, PDF Payslips | Admin (Lock), HR (Draft), Emp | 📋 Planned |
-| **M7: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | 📋 Planned |
-| **M8: AI Assistant** | 7 Scoped Tools, Dashboard Summaries, Grounded Policy Q&A | Gemini 3.5 Flash Tool Calling | 📋 Planned |
-| **M9: Comms & Audit**| Announcements, Notifications, Immutable Audit Trail | Role Scoped | 📋 Planned |
+| **M5: Leave Engine** | Quotas, Overlap Checks, HR Approval Inbox, Balance Dials | HR (Approve), Employee (Apply) | ✅ Completed & Verified |
+| **M6: Payroll Lite** | Salary Formula (1.5x), Tax Slabs, Deductions, Draft → Finalize | Admin (Lock), HR (Draft), Emp | 🔄 In Progress |
+| **M7: AI Assistant** | 7 Scoped Tools, Policy Q&A, Grounded Gemini Responses | All Roles (Scoped) | 🔄 In Progress |
+| **M8: Comms & Audit**| Announcements, Notifications, Immutable Audit Trail | Role Scoped | 🔄 In Progress |
+| **M9: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | 📋 Planned |
