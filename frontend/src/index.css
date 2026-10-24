@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Brand Tokens (Source: public/assets/Color scheme) */
+  --swift-neon: #B3FF21;
+  --swift-neon-glow: rgba(179, 255, 33, 0.25);
+  --swift-blue: #015AFF;
+  --swift-blue-glow: rgba(1, 90, 255, 0.25);
+  
+  /* Dark Mode Canvas & Surfaces (Source: colorScheme_APP.PNG) */
+  --bg-canvas: #121316;
+  --bg-surface-0: #18191D;
+  --bg-surface-1: #1C2427;
+  --bg-surface-2: #242A2E;
+  --bg-surface-3: #2D3035;
+  --bg-surface-hover: #363A40;
+  
+  /* Borders */
+  --border-subtle: #2A2E33;
+  --border-accent: rgba(179, 255, 33, 0.4);
+  --border-focus: #B3FF21;
+  
+  /* Typography */
+  --text-primary: #F4F4F6;
+  --text-secondary: #A0A5AD;
+  --text-muted: #6B7280;
+  --text-neon: #B3FF21;
+  
+  /* Status Semantics */
+  --status-present: #44F819;
+  --status-present-bg: rgba(68, 248, 25, 0.12);
+  --status-late: #FDDF01;
+  --status-late-bg: rgba(253, 223, 1, 0.12);
+  --status-absent: #FB2436;
+  --status-absent-bg: rgba(251, 36, 54, 0.12);
+  --status-halfday: #FF9800;
+  --status-halfday-bg: rgba(255, 152, 0, 0.12);
+  --status-leave: #015AFF;
+  --status-leave-bg: rgba(1, 90, 255, 0.12);
+
+  /* Elevation & Glassmorphism */
+  --glass-bg: rgba(28, 36, 39, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(12px);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --glow-shadow: 0 0 20px rgba(179, 255, 33, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-surface-0);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--swift-neon);
+}
+
+/* Base Card & Glass Utility */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+.swift-card {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.swift-card:hover {
+  border-color: rgba(179, 255, 33, 0.3);
+  box-shadow: var(--glow-shadow);
+}
+
+/* Neon Buttons & Accents */
+.btn-primary {
+  background: var(--swift-neon);
+  color: #121316;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 15px rgba(179, 255, 33, 0.2);
+}
+
+.btn-primary:hover {
+  background: #C4FF4D;
+  transform: translateY(-1px);
+  box-shadow: 0 0 25px rgba(179, 255, 33, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--text-secondary);
+}
+
+.btn-blue {
+  background: var(--swift-blue);
+  color: #FFFFFF;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 15px rgba(1, 90, 255, 0.3);
+}
+
+.btn-blue:hover {
+  background: #1A6CFF;
+  box-shadow: 0 0 25px rgba(1, 90, 255, 0.5);
+}
+
+/* Inputs */
+.swift-input {
+  width: 100%;
+  background: var(--bg-surface-0);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 0.65rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.swift-input:focus {
+  border-color: var(--swift-neon);
+  box-shadow: 0 0 0 2px rgba(179, 255, 33, 0.2);
+}
+
+.swift-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.badge-present {
+  color: var(--status-present);
+  background: var(--status-present-bg);
+  border: 1px solid rgba(68, 248, 25, 0.25);
+}
+
+.badge-late {
+  color: var(--status-late);
+  background: var(--status-late-bg);
+  border: 1px solid rgba(253, 223, 1, 0.25);
+}
+
+.badge-absent {
+  color: var(--status-absent);
+  background: var(--status-absent-bg);
+  border: 1px solid rgba(251, 36, 54, 0.25);
+}
+
+.badge-leave {
+  color: var(--status-leave);
+  background: var(--status-leave-bg);
+  border: 1px solid rgba(1, 90, 255, 0.25);
+}
+
+.badge-role-admin {
+  color: #B3FF21;
+  background: rgba(179, 255, 33, 0.12);
+  border: 1px solid rgba(179, 255, 33, 0.3);
+}
+
+.badge-role-hr {
+  color: #015AFF;
+  background: rgba(1, 90, 255, 0.12);
+  border: 1px solid rgba(1, 90, 255, 0.3);
+}
+
+.badge-role-employee {
+  color: #CAA47D;
+  background: rgba(202, 164, 125, 0.12);
+  border: 1px solid rgba(202, 164, 125, 0.3);
+}
