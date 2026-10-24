@@ -57,6 +57,58 @@ export interface LeaveTypeQuota {
   is_unpaid: boolean;
 }
 
+export interface Employee {
+  id: number;
+  employee_code: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string | null;
+  address?: string | null;
+  department_id?: number | null;
+  designation_id?: number | null;
+  joining_date: string;
+  exit_date?: string | null;
+  status: string;
+  basic_salary: number;
+  gross_salary: number;
+  created_at: string;
+  department?: Department | null;
+  designation?: Designation | null;
+}
+
+export interface EmployeeListResponse {
+  items: Employee[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface Employee360 extends Employee {
+  attendance_count: number;
+  approved_leaves_count: number;
+  total_payslips_count: number;
+}
+
+export interface CsvDryRunError {
+  row: number;
+  field: string;
+  reason: string;
+}
+
+export interface CsvDryRunResponse {
+  total_rows: number;
+  valid_rows: number;
+  can_import: boolean;
+  errors: CsvDryRunError[];
+}
+
+export interface CsvImportCommitResponse {
+  imported_count: number;
+  message: string;
+}
+
 class ApiService {
   private getToken(): string | null {
     return localStorage.getItem("swift_hcm_token");
@@ -73,9 +125,13 @@ class ApiService {
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...(options.headers as Record<string, string> || {}),
     };
+
+    // Only set Content-Type to application/json if not sending FormData
+    if (!(options.body instanceof FormData) && !headers["Content-Type"]) {
+      headers["Content-Type"] = "application/json";
+    }
 
     const token = this.getToken();
     if (token) {
@@ -204,6 +260,63 @@ class ApiService {
 
   async listLeaveTypes(): Promise<LeaveTypeQuota[]> {
     return this.request<LeaveTypeQuota[]>("/org/leave-types");
+  }
+
+  // --- EMPLOYEES & CSV (M3) ---
+  async listEmployees(params: { search?: string; department_id?: number; status?: string; page?: number; page_size?: number } = {}): Promise<EmployeeListResponse> {
+    const q = new URLSearchParams();
+    if (params.search) q.append("search", params.search);
+    if (params.department_id) q.append("department_id", params.department_id.toString());
+    if (params.status) q.append("status", params.status);
+    if (params.page) q.append("page", params.page.toString());
+    if (params.page_size) q.append("page_size", params.page_size.toString());
+
+    return this.request<EmployeeListResponse>(`/employees?${q.toString()}`);
+  }
+
+  async registerEmployee(payload: any): Promise<Employee> {
+    return this.request<Employee>("/employees", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getEmployee360(id: number): Promise<Employee360> {
+    return this.request<Employee360>(`/employees/${id}`);
+  }
+
+  async updateEmployee(id: number, payload: Partial<Employee>): Promise<Employee> {
+    return this.request<Employee>(`/employees/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async dryRunCsv(file: File): Promise<CsvDryRunResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request<CsvDryRunResponse>("/employees/csv-dry-run", {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  async commitCsvImport(file: File): Promise<CsvImportCommitResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request<CsvImportCommitResponse>("/employees/csv-import", {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  async exportEmployeesCsv(): Promise<Blob> {
+    const token = this.getToken();
+    const res = await fetch(`${API_BASE}/employees/export/csv`, {
+      headers: token ? { "Authorization": `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error("Failed to export employees CSV");
+    return res.blob();
   }
 }
 

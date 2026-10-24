@@ -5,6 +5,8 @@ import { SetupPage } from "./pages/SetupPage";
 import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { OrgSetupPage } from "./pages/OrgSetupPage";
+import { EmployeesPage } from "./pages/EmployeesPage";
+import { Employee360Page } from "./pages/Employee360Page";
 import { AppLayout } from "./components/layout/AppLayout";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -83,6 +85,22 @@ export const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <OrgSetupPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employees"
+            element={
+              <ProtectedRoute>
+                <EmployeesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employees/:id"
+            element={
+              <ProtectedRoute>
+                <Employee360Page />
               </ProtectedRoute>
             }
           />
