@@ -1,23 +1,24 @@
 # Swift-HCM Lite
 
-**AI-Assisted Human Capital Management System**  
-Saylani Hackathon 2026 • Zaitoon Ashraf IT Park  
+**AI-Assisted Human Capital Management System**
+Saylani Hackathon 2026 • Zaitoon Ashraf IT Park
 Built by **[Lyntica](https://www.lyntica.com/)**
 
 ---
 
-## 👥 Designed & Developed By
+##  Team
 
-* **Murtaza Ali** — AI/ML & Full-Stack Engineering Lead  
-  [Portfolio](https://www.murtazaalikhan.com/) • [GitHub](https://www.github.com/murtazakhanpro) • [LinkedIn](https://www.linkedin.com/in/murtazakhanworld) • [Hugging Face](https://huggingface.co/murtazakhanpro)
+* **Murtaza Ali Khan**
+  [Portfolio](https://www.murtazalikhan.com) • [GitHub](https://github.com/murtazakhanpro) • [LinkedIn](https://www.linkedin.com/in/murtazakhanpro) • [Hugging Face](https://huggingface.co/murtazakhanpro)
+* **Fiza Baneen Khan — Co-founder, Modern Web and App Developer**
+  [Portfolio](https://www.fizabaneen.com) • [GitHub](https://github.com/fizabaneen) • [LinkedIn](https://www.linkedin.com/in/fizabaneen)
 
 ---
 
-## 🚀 Technology Stack
+##  Technology Stack
 
 * **Backend:** Python FastAPI (Asynchronous high-throughput, Pydantic V2, PyJWT, Bcrypt)
-* **AI & LLM:** Google Gemini 3.5 Flash / Gemini Flash Lite with scoped tool-calling and zero-hallucination policy grounding
-* **Data Science & ML:** NumPy, Pandas, Scikit-Learn (Predictive Attrition & Absence Anomaly Detection)
+* **AI & LLM:** Backend-integrated Gemini API; availability depends on server-side API key configuration
 * **Database:** Dual-Engine Architecture
   * **Local Zero-Install:** Asynchronous SQLite (`sqlite+aiosqlite`)
   * **Containerized Production / Judging:** PostgreSQL 16 (`postgresql+asyncpg`)
@@ -26,7 +27,7 @@ Built by **[Lyntica](https://www.lyntica.com/)**
 
 ---
 
-## 📋 Hackathon Compliance Guarantee: Clean-Slate Database
+##  Data and initial setup
 
 Per the official Saylani HCM Lite challenge rules:
 > *"The system starts empty, Admin sets up the company, HR registers employees, and every number comes from what people do in the app."*
@@ -38,7 +39,7 @@ Per the official Saylani HCM Lite challenge rules:
 
 ---
 
-## ⚡ Quick Start: Run in Under 5 Minutes
+##  Quick Start
 
 ### Option A: Local Development (Recommended, Zero External Dependencies)
 
@@ -69,30 +70,56 @@ npm run dev
 # Set your Gemini API Key in .env, then run:
 docker compose up --build
 ```
-*Frontend runs on [http://localhost:3000](http://localhost:3000)*  
+*Frontend runs on [http://localhost:3000](http://localhost:3000)*
 *Backend runs on [http://localhost:8000](http://localhost:8000)*
 
 ---
 
-## 🧪 Automated Test Suite
+## Automated Backend Tests
 
-Run the full end-to-end integration and unit test suite:
+The current automated suite contains unit and API integration tests. It is not a complete end-to-end, browser, security, or performance test suite.
+
 ```powershell
 python -m pytest backend/tests/ -v
+cd frontend
+npm run build
 ```
 
----
+## Current Implementation Status
 
-## 📦 Progress & Modules Status
+The nine product areas have implementations in the repository. Passing tests provide partial coverage and do not establish release readiness for the full 25-item brief.
 
-| Module | Feature Set | Scope / Role | Implementation Status |
-| :--- | :--- | :--- | :---: |
-| **M1: Auth & Access** | First-Run Setup, Login, Change Temp Password, JWT RBAC | Admin, HR, Employee | ✅ Completed & Verified |
-| **M2: Org Setup** | Company Settings, Departments, Designations, Holidays, Quotas | Admin (Manage), HR (View) | ✅ Completed & Verified |
-| **M3: Employees** | Directory, Search & Filter, Employee 360, Dry-Run CSV Pipeline | HR (Manage), Employee (Self-Edit) | ✅ Completed & Verified |
-| **M4: Attendance** | Web Check-In/Out, GPS Geofence Haversine, Face Detection | All Roles (Scoped) | ✅ Completed & Verified |
-| **M5: Leave Engine** | Quotas, Overlap Checks, HR Approval Inbox, Balance Dials | HR (Approve), Employee (Apply) | ✅ Completed & Verified |
-| **M6: Payroll Lite** | Salary Formula (1.5x), Tax Slabs, Deductions, Draft → Finalize | Admin (Lock), HR (Draft), Emp | ✅ Completed & Verified |
-| **M7: AI Assistant** | 7 Scoped Tools, Policy Q&A, Grounded Gemini Responses | All Roles (Scoped) | ✅ Completed & Verified |
-| **M8: Comms & Audit**| Announcements, Notifications, Immutable Audit Trail | Role Scoped | ✅ Completed & Verified |
-| **M9: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | ✅ Completed & Verified |
+| Module | Current code | Verification status |
+| :--- | :--- | :--- |
+| M1 Authentication and access | First-run setup, login, password change, role checks, user management | API tests exist; rate limits and password reset workflow need further work |
+| M2 Organization setup | Company settings, departments, designations, holidays, leave quotas | API tests exist; database migrations and effective-dated settings are not implemented |
+| M3 Employees | Profiles, directory, search, CSV preview/export | API and UI exist; pagination and cross-organization isolation need further work |
+| M4 Attendance | Check-in/out, status rules, correction requests, camera/geofence UI | API tests exist; concurrency and timezone edge cases need more coverage |
+| M5 Leave | Requests, balances, overlap checks, HR decisions | API/UI implemented; full policy edge-case coverage remains incomplete |
+| M6 Payroll | Drafts, tax, deductions, finalization, payslip views | API tests exist; tax slabs now match the brief; storage still uses floating-point columns |
+| M7 Dashboards and analytics | Role-based dashboard summaries and attendance/department views | Implemented; formulas and filters need broader fixture-backed tests; no predictive ML model is included |
+| M8 AI assistant | Backend tools, Gemini integration, scoped employee/payroll paths, grounded fallback | Implemented; provider timeout, rate limiting, evaluation cases, and structured smart-leave flow need further work |
+| M9 Communications and audit | Announcements, notifications, audit records and audit view | Implemented; audit immutability and event coverage need further verification |
+
+### Local environment
+
+Copy `.env.example` to `.env`. Set a unique `JWT_SECRET` with at least 32 characters before using Docker or a production environment. Keep `.env` out of Git. `GEMINI_API_KEY` is optional for core HR workflows and must remain server-side. Set `CORS_ORIGINS` to the exact frontend origins when hosting frontend and backend separately.
+
+The development frontend uses relative `/api/v1` requests and Vite proxies them to `http://127.0.0.1:8000`. The Docker frontend proxies API requests through Nginx.
+
+Backend operational endpoints are `/api/v1/health` and `/api/v1/ready`; the latter returns HTTP 503 when the database cannot be reached.
+
+### Known limitations
+
+- The application currently creates tables with SQLAlchemy `create_all`; it does not have a migration history.
+- Payroll fields are persisted as floating-point SQL columns, despite decimal-safe tax computation.
+- API rate limiting, complete browser accessibility checks, cross-organization tenancy, and load-test evidence are not established.
+- The current automated tests are a small backend suite; no full browser end-to-end suite or performance report is present.
+- Gemini-dependent behavior requires a valid server-side API key and has not been verified against a live provider during this change.
+
+### Credits
+
+Swift-HCM Lite is a Lyntica product. Team links:
+
+- Murtaza Ali Khan: [Portfolio](https://www.murtazalikhan.com), [GitHub](https://github.com/murtazakhanpro), [LinkedIn](https://www.linkedin.com/in/murtazakhanpro), [Hugging Face](https://huggingface.co/murtazakhanpro)
+- Fiza Baneen Khan, Co-founder and Modern Web and App Developer: [Portfolio](https://www.fizabaneen.com), [GitHub](https://github.com/fizabaneen), [LinkedIn](https://www.linkedin.com/in/fizabaneen)

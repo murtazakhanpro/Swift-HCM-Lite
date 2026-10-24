@@ -5,16 +5,9 @@ import {
   Sparkles,
   User,
   Shield,
-  HelpCircle,
-  Database,
   ChevronDown,
   ChevronUp,
   RefreshCw,
-  Clock,
-  Users,
-  Calendar,
-  Receipt,
-  AlertTriangle,
   Lightbulb,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -97,7 +90,7 @@ I can answer company policy questions, compute leave balances, analyze workforce
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/ai/query", {
+      const res = await fetch("/api/v1/ai/query", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

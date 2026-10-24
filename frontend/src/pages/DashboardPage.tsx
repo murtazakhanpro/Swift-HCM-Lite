@@ -1,25 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
-  Building2,
   CalendarCheck,
   CalendarOff,
   Receipt,
-  ArrowUpRight,
   Clock,
-  ShieldCheck,
   Bot,
   Users,
   Megaphone,
-  TrendingUp,
   Activity,
   Plus,
   CheckCircle,
-  AlertTriangle,
   Sparkles,
   ChevronRight,
-  DollarSign,
-  UserCheck,
   X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -48,10 +41,8 @@ interface DashboardSummary {
     date: string;
   }>;
   ml_insights: {
-    predicted_on_time_attendance: number;
     punctuality_health: string;
     chronic_late_anomalies: number;
-    retention_confidence: string;
   };
   personal: {
     today_status?: string;
@@ -62,7 +53,7 @@ interface DashboardSummary {
 export const DashboardPage: React.FC = () => {
   const { user, token } = useAuth();
   const [data, setData] = useState<DashboardSummary | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   // Quick announcement modal for Admin / HR
@@ -82,7 +73,7 @@ export const DashboardPage: React.FC = () => {
   const fetchDashboardData = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/org/dashboard-summary", {
+      const res = await fetch("/api/v1/org/dashboard-summary", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -105,7 +96,7 @@ export const DashboardPage: React.FC = () => {
     if (!token || !annTitle.trim() || !annContent.trim()) return;
     setAnnSubmitting(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/comms/announcements", {
+      const res = await fetch("/api/v1/comms/announcements", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +188,7 @@ export const DashboardPage: React.FC = () => {
       {/* METRIC STRIP (Module 9 Dashboards) */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.25rem" }}>
         {/* Active Headcount */}
-        <div className="swift-card">
+        {user?.role !== "Employee" && <div className="swift-card">
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
             <span>ACTIVE WORKFORCE</span>
             <Users size={18} color="var(--swift-neon)" />
@@ -208,12 +199,12 @@ export const DashboardPage: React.FC = () => {
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
             Spread across {data?.total_departments || 0} departments
           </div>
-        </div>
+        </div>}
 
         {/* Today's Attendance Rate */}
         <div className="swift-card">
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
-            <span>ATTENDANCE TODAY</span>
+            <span>{user?.role === "Employee" ? "MY ATTENDANCE TODAY" : "ATTENDANCE TODAY"}</span>
             <CalendarCheck size={18} color="#10b981" />
           </div>
           <div style={{ fontSize: "1.85rem", fontWeight: 800, color: "#10b981", marginTop: "0.4rem" }}>
@@ -225,7 +216,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Latest Payroll Status */}
-        <div className="swift-card">
+        {user?.role !== "Employee" && <div className="swift-card">
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
             <span>MONTHLY PAYROLL</span>
             <Receipt size={18} color="var(--swift-blue)" />
@@ -236,21 +227,21 @@ export const DashboardPage: React.FC = () => {
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
             Cycle: {data?.payroll.latest_month || "None"} • Status: {data?.payroll.status.toUpperCase() || "IDLE"}
           </div>
-        </div>
+        </div>}
 
-        {/* AI & ML Predictive Insights */}
-        <div className="swift-card" style={{ border: "1px solid rgba(179, 255, 33, 0.3)" }}>
+        {/* Attendance follow-up counts come from saved attendance records. */}
+        {user?.role !== "Employee" && <div className="swift-card" style={{ border: "1px solid rgba(179, 255, 33, 0.3)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary)", fontSize: "0.8rem", fontWeight: 600 }}>
-            <span>PREDICTIVE ML INSIGHTS</span>
+            <span>LATE ARRIVAL FOLLOW-UP</span>
             <Sparkles size={18} color="var(--swift-neon)" />
           </div>
           <div style={{ fontSize: "1.15rem", fontWeight: 800, color: "var(--text-primary)", marginTop: "0.4rem" }}>
-            {data?.ml_insights.punctuality_health === "OPTIMAL" ? "Optimal Stability" : "Attention Flagged"}
+            {data?.ml_insights.chronic_late_anomalies ? "Repeated late arrivals" : "No repeated late arrivals"}
           </div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
-            {data?.ml_insights.chronic_late_anomalies || 0} chronic anomalies • {data?.ml_insights.predicted_on_time_attendance || 95}% expected on-time
+            {data?.ml_insights.chronic_late_anomalies || 0} employees with at least three late arrivals this month
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* DUAL COLUMN: Quick Navigation & Announcements Feed */}

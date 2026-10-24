@@ -147,3 +147,33 @@ async def test_phase1_end_to_end():
         })
         assert new_hr_login.status_code == 200
         assert new_hr_login.json()["user"]["must_change_password"] is False
+
+        for name, email in [("Amina", "amina@example.com"), ("Bilal", "bilal@example.com")]:
+            employee_res = await client.post("/api/v1/employees", headers=hr_headers, json={
+                "first_name": name,
+                "last_name": "Employee",
+                "email": email,
+                "joining_date": "2026-01-01",
+                "basic_salary": 100000,
+                "temporary_password": "TempEmployee123!",
+            })
+            assert employee_res.status_code == 200, employee_res.text
+
+        admin_dashboard = await client.get("/api/v1/org/dashboard-summary", headers=admin_headers)
+        assert admin_dashboard.status_code == 200
+        assert admin_dashboard.json()["active_employees"] == 2
+
+        employee_login = await client.post("/api/v1/auth/login", json={
+            "email": "amina@example.com",
+            "password": "TempEmployee123!",
+        })
+        assert employee_login.status_code == 200
+        employee_headers = {"Authorization": f"Bearer {employee_login.json()['access_token']}"}
+        employee_dashboard = await client.get("/api/v1/org/dashboard-summary", headers=employee_headers)
+        assert employee_dashboard.status_code == 200
+        summary = employee_dashboard.json()
+        assert summary["active_employees"] == 1
+        assert summary["total_departments"] == 0
+        assert summary["payroll"]["latest_net_payout"] == 0
+        assert "predicted_on_time_attendance" not in summary["ml_insights"]
+        assert "retention_confidence" not in summary["ml_insights"]

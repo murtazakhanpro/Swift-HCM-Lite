@@ -10,15 +10,11 @@ import {
   FileText,
   DollarSign,
   Calendar,
-  User,
-  Building,
-  TrendingDown,
   Printer,
   Trash2,
   ChevronRight,
   Eye,
   X,
-  Clock,
   ShieldAlert,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -117,10 +113,10 @@ export const PayrollPage: React.FC = () => {
     try {
       if (isHRorAdmin) {
         const [runsRes, sumRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/v1/payroll/runs", {
+          fetch("/api/v1/payroll/runs", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch("http://127.0.0.1:8000/api/v1/payroll/summary", {
+          fetch("/api/v1/payroll/summary", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -135,7 +131,7 @@ export const PayrollPage: React.FC = () => {
         }
       } else {
         // Employee view
-        const res = await fetch("http://127.0.0.1:8000/api/v1/payroll/payslips/my", {
+        const res = await fetch("/api/v1/payroll/payslips/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -158,7 +154,7 @@ export const PayrollPage: React.FC = () => {
   const handleInspectRun = async (runId: number) => {
     if (!token) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/payroll/runs/${runId}`, {
+      const res = await fetch(`/api/v1/payroll/runs/${runId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -180,7 +176,7 @@ export const PayrollPage: React.FC = () => {
     setErrorMsg(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/payroll/runs", {
+      const res = await fetch("/api/v1/payroll/runs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -220,7 +216,7 @@ export const PayrollPage: React.FC = () => {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/v1/payroll/runs/${showFinalizeConfirm.id}/finalize`,
+        `/api/v1/payroll/runs/${showFinalizeConfirm.id}/finalize`,
         {
           method: "POST",
           headers: {
@@ -261,7 +257,7 @@ export const PayrollPage: React.FC = () => {
     if (!window.confirm(`Are you sure you want to delete the draft run for ${month}?`)) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/payroll/runs/${runId}`, {
+      const res = await fetch(`/api/v1/payroll/runs/${runId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

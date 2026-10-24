@@ -15,7 +15,6 @@ import {
   Bell,
   Clock,
   Sparkles,
-  Check,
   CheckCheck
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -42,7 +41,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const fetchNotifications = async () => {
     if (!token) return;
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/comms/notifications?limit=15", {
+      const res = await fetch("/api/v1/comms/notifications?limit=15", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -63,7 +62,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const markAsRead = async (id: number) => {
     if (!token) return;
     try {
-      await fetch(`http://127.0.0.1:8000/api/v1/comms/notifications/${id}/read`, {
+      await fetch(`/api/v1/comms/notifications/${id}/read`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -76,7 +75,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const markAllRead = async () => {
     if (!token) return;
     try {
-      await fetch("http://127.0.0.1:8000/api/v1/comms/notifications/read-all", {
+      await fetch("/api/v1/comms/notifications/read-all", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });

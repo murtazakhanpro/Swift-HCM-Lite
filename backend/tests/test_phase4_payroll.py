@@ -34,6 +34,13 @@ def test_tax_slab_calculation():
     assert tax_150k > 0.0
 
 
+def test_tax_slab_boundaries_follow_hackathon_brief():
+    assert calculate_income_tax(100000) == 2500.0
+    assert calculate_income_tax(200000) == 17500.0
+    assert calculate_income_tax(300000) == 42500.0
+    assert calculate_income_tax(400000) == 77500.0
+
+
 @pytest.mark.asyncio
 async def test_payroll_full_lifecycle():
     transport = ASGITransport(app=app)

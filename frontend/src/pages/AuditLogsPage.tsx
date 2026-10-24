@@ -6,11 +6,8 @@ import {
   Filter,
   Eye,
   X,
-  Clock,
   Terminal,
   Activity,
-  User,
-  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -29,7 +26,7 @@ interface AuditLog {
 }
 
 export const AuditLogsPage: React.FC = () => {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionFilter, setActionFilter] = useState("");
@@ -41,7 +38,7 @@ export const AuditLogsPage: React.FC = () => {
     setLoading(true);
 
     try {
-      let url = "http://127.0.0.1:8000/api/v1/comms/audit-logs?limit=100";
+      let url = "/api/v1/comms/audit-logs?limit=100";
       if (actionFilter) url += `&action=${encodeURIComponent(actionFilter)}`;
       if (entityFilter) url += `&entity=${encodeURIComponent(entityFilter)}`;
 

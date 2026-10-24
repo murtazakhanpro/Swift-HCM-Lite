@@ -1,7 +1,7 @@
 import os
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, model_validator
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Swift-HCM Lite"
@@ -23,6 +23,18 @@ class Settings(BaseSettings):
     # AI Engine
     GEMINI_API_KEY: str = Field(default="")
     AI_MODEL: str = Field(default="gemini-3.5-flash-lite")
+
+    @model_validator(mode="after")
+    def validate_production_secrets(self):
+        if self.ENVIRONMENT.lower() == "production":
+            insecure_secret = (
+                len(self.JWT_SECRET) < 32
+                or self.JWT_SECRET.startswith("swift_hcm_super_secret")
+                or self.JWT_SECRET.lower().startswith("your_")
+            )
+            if insecure_secret:
+                raise ValueError("Production requires a unique JWT_SECRET of at least 32 characters")
+        return self
     
     @property
     def cors_origin_list(self) -> List[str]:

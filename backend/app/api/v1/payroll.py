@@ -1,5 +1,6 @@
 from datetime import datetime, timezone, date
 import calendar
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,26 +31,27 @@ router = APIRouter(prefix="/payroll", tags=["Payroll Lite (Module 6)"])
 
 def calculate_income_tax(monthly_gross: float) -> float:
     """
-    Computes monthly progressive income tax (Pakistan / Standard enterprise slab).
+    Computes the brief's illustrative monthly withholding from annualized gross.
     Annualized:
       <= 600k: 0%
       600k - 1.2M: 5% of excess over 600k
-      1.2M - 2.2M: 30k + 15% of excess over 1.2M
-      2.2M - 3.2M: 180k + 25% of excess over 2.2M
-      > 3.2M: 430k + 35% of excess over 3.2M
+      1.2M - 2.4M: 30k + 15% of excess over 1.2M
+      2.4M - 3.6M: 210k + 25% of excess over 2.4M
+      > 3.6M: 510k + 35% of excess over 3.6M
     """
-    annual = monthly_gross * 12.0
-    if annual <= 600000:
-        tax = 0.0
-    elif annual <= 1200000:
-        tax = (annual - 600000) * 0.05
-    elif annual <= 2200000:
-        tax = 30000.0 + (annual - 1200000) * 0.15
-    elif annual <= 3200000:
-        tax = 180000.0 + (annual - 2200000) * 0.25
+    annual = Decimal(str(monthly_gross)) * Decimal("12")
+    if annual <= Decimal("600000"):
+        tax = Decimal("0")
+    elif annual <= Decimal("1200000"):
+        tax = (annual - Decimal("600000")) * Decimal("0.05")
+    elif annual <= Decimal("2400000"):
+        tax = Decimal("30000") + (annual - Decimal("1200000")) * Decimal("0.15")
+    elif annual <= Decimal("3600000"):
+        tax = Decimal("210000") + (annual - Decimal("2400000")) * Decimal("0.25")
     else:
-        tax = 430000.0 + (annual - 3200000) * 0.35
-    return round(tax / 12.0, 2)
+        tax = Decimal("510000") + (annual - Decimal("3600000")) * Decimal("0.35")
+    monthly_tax = (tax / Decimal("12")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return float(monthly_tax)
 
 
 def _format_payslip(p: Payslip, month_year: str) -> PayslipResponse:

@@ -24,13 +24,6 @@ import {
 } from "../services/api";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-const fmtDate = (iso: string) =>
-  new Date(iso + "T00:00:00").toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
 const statusColor: Record<string, string> = {
   pending: "var(--status-late)",
   approved: "var(--status-present)",

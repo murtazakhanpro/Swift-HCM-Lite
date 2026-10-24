@@ -8,7 +8,6 @@ import {
   AlertCircle,
   Users,
   CalendarCheck,
-  TrendingUp,
   RefreshCw,
   ChevronLeft,
   ChevronRight,
@@ -32,9 +31,6 @@ import {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const fmtTime = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—";
-
-const fmtDate = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—";
 
 const statusBadge = (s: string) => {
   const map: Record<string, string> = {
@@ -284,7 +280,6 @@ const CorrectionModal: React.FC<{
 
 // ── EMPLOYEE VIEW ─────────────────────────────────────────────────────────────
 const EmployeeAttendanceView: React.FC = () => {
-  const { user } = useAuth();
   const [todayStatus, setTodayStatus] = useState<TodayStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);

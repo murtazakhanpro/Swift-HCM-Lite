@@ -232,25 +232,49 @@ async def get_dashboard_summary(
     today = date.today()
 
     # Active headcount
-    emp_count_q = await db.execute(select(func.count(Employee.id)).where(Employee.status == "active"))
+    is_employee = current_user.role == "Employee"
+    employee_scope = [Employee.status == "active"]
+    if is_employee:
+        employee_scope.append(Employee.id == current_user.employee_id)
+    emp_count_q = await db.execute(select(func.count(Employee.id)).where(*employee_scope))
     active_employees = emp_count_q.scalar_one()
 
     # Department count
-    dept_count_q = await db.execute(select(func.count(Department.id)))
-    total_depts = dept_count_q.scalar_one()
+    if is_employee:
+        total_depts = 0
+    else:
+        dept_count_q = await db.execute(select(func.count(Department.id)))
+        total_depts = dept_count_q.scalar_one()
 
     # Attendance today
-    att_today_q = await db.execute(select(Attendance).where(Attendance.date == today))
+    attendance_filters = [Attendance.date == today]
+    if is_employee:
+        attendance_filters.append(Attendance.employee_id == current_user.employee_id)
+    att_today_q = await db.execute(select(Attendance).where(*attendance_filters))
     att_today = att_today_q.scalars().all()
 
-    checked_in = sum(1 for a in att_today if a.status in ("present", "late", "half_day"))
+    checked_in = sum(1 for a in att_today if a.status in ("present", "late", "half_day", "missing_checkout"))
     late_today = sum(1 for a in att_today if a.status == "late")
     on_time = checked_in - late_today
-    on_time_pct = round((on_time / checked_in * 100), 1) if checked_in > 0 else 100.0
+    on_time_pct = round((on_time / checked_in * 100), 1) if checked_in > 0 else 0.0
 
     # Latest payroll
-    pay_q = await db.execute(select(PayrollRun).order_by(PayrollRun.month_year.desc()))
-    latest_run = pay_q.scalars().first()
+    if is_employee:
+        from app.models.payroll import Payslip
+        pay_q = await db.execute(
+            select(Payslip, PayrollRun)
+            .join(PayrollRun, Payslip.payroll_run_id == PayrollRun.id)
+            .where(Payslip.employee_id == current_user.employee_id, PayrollRun.status == "finalized")
+            .order_by(PayrollRun.month_year.desc())
+            .limit(1)
+        )
+        latest_slip = pay_q.first()
+        latest_run = latest_slip[1] if latest_slip else None
+        latest_net_payout = latest_slip[0].net_salary if latest_slip else 0.0
+    else:
+        pay_q = await db.execute(select(PayrollRun).order_by(PayrollRun.month_year.desc()))
+        latest_run = pay_q.scalars().first()
+        latest_net_payout = latest_run.total_net if latest_run else 0.0
 
     # Announcements
     ann_q = await db.execute(select(Announcement).order_by(Announcement.created_at.desc()).limit(3))
@@ -261,13 +285,16 @@ async def get_dashboard_summary(
 
     # Chronic late anomalies this month
     m_start = date(today.year, today.month, 1)
-    lates_q = await db.execute(
-        select(Attendance.employee_id)
-        .where(Attendance.status == "late", Attendance.date >= m_start)
-        .group_by(Attendance.employee_id)
-        .having(func.count(Attendance.id) >= 3)
-    )
-    chronic_lates = len(lates_q.all())
+    if not is_employee:
+        lates_q = await db.execute(
+            select(Attendance.employee_id)
+            .where(Attendance.status == "late", Attendance.date >= m_start)
+            .group_by(Attendance.employee_id)
+            .having(func.count(Attendance.id) >= 3)
+        )
+        chronic_lates = len(lates_q.all())
+    else:
+        chronic_lates = 0
 
     # Employee's personal metrics if employee role
     personal = {}
@@ -291,14 +318,12 @@ async def get_dashboard_summary(
         "payroll": {
             "latest_month": latest_run.month_year if latest_run else None,
             "status": latest_run.status if latest_run else "none",
-            "latest_net_payout": latest_run.total_net if latest_run else 0.0
+            "latest_net_payout": latest_net_payout
         },
         "announcements": anns,
         "ml_insights": {
-            "predicted_on_time_attendance": 95.8,
             "punctuality_health": "NEEDS_ATTENTION" if chronic_lates > 0 else "OPTIMAL",
-            "chronic_late_anomalies": chronic_lates,
-            "retention_confidence": "HIGH (98.2%)"
+            "chronic_late_anomalies": chronic_lates
         },
         "personal": personal
     }
