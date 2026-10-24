@@ -92,7 +92,7 @@ python -m pytest backend/tests/ -v
 | **M1: Auth & Access** | First-Run Setup, Login, Change Temp Password, JWT RBAC | Admin, HR, Employee | ✅ Completed & Verified |
 | **M2: Org Setup** | Company Settings, Departments, Designations, Holidays, Quotas | Admin (Manage), HR (View) | ✅ Completed & Verified |
 | **M3: Employees** | Directory, Search & Filter, Employee 360, Dry-Run CSV Pipeline | HR (Manage), Employee (Self-Edit) | ✅ Completed & Verified |
-| **M4: Attendance** | Web Check-In/Out, GPS Geofence Haversine, Face Detection | All Roles (Scoped) | 🔄 Next Phase |
+| **M4: Attendance** | Web Check-In/Out, GPS Geofence Haversine, Face Detection | All Roles (Scoped) | ✅ Completed & Verified |
 | **M5: Leave Engine** | Quotas, Overlap Checks, HR Approval Inbox, Smart Leave NLP | HR (Approve), Employee (Apply) | 📋 Planned |
 | **M6: Payroll Lite** | Salary Formula (1.5x), Tax Slabs, Deductions, PDF Payslips | Admin (Lock), HR (Draft), Emp | 📋 Planned |
 | **M7: Dashboards** | Headcount, Attrition, Attendance Rate, ML Insights | Role Scoped | 📋 Planned |
