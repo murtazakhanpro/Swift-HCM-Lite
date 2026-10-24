@@ -7,8 +7,15 @@ class CheckInRequest(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     gps_accuracy: Optional[float] = None
-    face_detected: Optional[bool] = False
-    faces_count: Optional[int] = 0
+    face_image: Optional[str] = Field(None, max_length=2_800_000)
+
+class FaceImageRequest(BaseModel):
+    image: str = Field(..., min_length=100, max_length=2_800_000)
+    consent: bool = False
+
+class FaceEnrollmentStatus(BaseModel):
+    enrolled: bool
+    enabled: bool
 
 class CheckOutRequest(BaseModel):
     latitude: Optional[float] = None

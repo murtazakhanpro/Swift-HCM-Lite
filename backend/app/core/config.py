@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, model_validator
@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = Field(default="")
     AI_MODEL: str = Field(default="gemini-3.5-flash-lite")
 
+    # Face verification is disabled until a Fernet key is explicitly configured.
+    FACE_ENCRYPTION_KEY: str = Field(default="")
+    FACE_MODEL_ID: str = Field(default="librefacerec-l.onnx")
+    FACE_MATCH_THRESHOLD: float = Field(default=0.4, ge=0.0, le=1.0)
+
     @model_validator(mode="after")
     def validate_production_secrets(self):
         if self.ENVIRONMENT.lower() == "production":
@@ -41,7 +46,7 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     model_config = SettingsConfigDict(
-        env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
+        env_file=Path(__file__).resolve().parents[3] / ".env",
         env_file_encoding="utf-8",
         extra="ignore"
     )

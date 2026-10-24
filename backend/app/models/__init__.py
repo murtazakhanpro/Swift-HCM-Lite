@@ -7,6 +7,7 @@ from app.models.leave import LeaveRequest
 from app.models.payroll import PayrollRun, Payslip
 from app.models.audit import AuditLog
 from app.models.comms import Announcement, Notification
+from app.models.face_template import FaceTemplate
 
 __all__ = [
     "Base",
@@ -24,5 +25,6 @@ __all__ = [
     "Payslip",
     "AuditLog",
     "Announcement",
-    "Notification"
+    "Notification",
+    "FaceTemplate",
 ]

@@ -1,4 +1,4 @@
-import os
+import logging
 import json
 from datetime import date, datetime
 from typing import Dict, Any, Optional, List
@@ -14,6 +14,8 @@ from app.models.organization import CompanySettings, Department, Designation, Le
 from app.models.attendance import Attendance
 from app.models.leave import LeaveRequest
 from app.models.payroll import PayrollRun, Payslip
+
+logger = logging.getLogger(__name__)
 
 
 # ── The 7 Scoped HCM Tools ─────────────────────────────────────────────────────
@@ -389,7 +391,7 @@ async def answer_ai_query(user_msg: str, current_user: User, db: AsyncSession) -
             from google import genai
             client = genai.Client(api_key=api_key)
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model=settings.AI_MODEL,
                 contents=prompt,
                 config={
                     "system_instruction": system_instruction,
@@ -404,7 +406,7 @@ async def answer_ai_query(user_msg: str, current_user: User, db: AsyncSession) -
                 }
         except Exception as e:
             # Fall back to deterministic grounded formatter below
-            pass
+            logger.warning("Gemini request failed; using grounded fallback (%s): %s", type(e).__name__, e)
 
     # Deterministic Grounded Fallback (guarantees 100% reliable responses in offline/evaluation mode)
     if selected_tool == "get_company_policy" and tool_data:

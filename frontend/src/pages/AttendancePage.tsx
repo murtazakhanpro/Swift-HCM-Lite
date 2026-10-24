@@ -26,6 +26,7 @@ import {
   type AttendanceRecord,
   type DailyBoardSummary,
   type AttendanceCorrectionRequest,
+  type FaceEnrollmentStatus,
 } from "../services/api";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -79,11 +80,13 @@ const MetricCard: React.FC<{
 
 // ── Camera Check-In Widget ────────────────────────────────────────────────────
 interface CameraWidgetProps {
-  onCapture: (faceDetected: boolean, facesCount: number) => void;
+  onCapture: (faceImage: string) => void;
   onCancel: () => void;
+  canCapture?: boolean;
+  enrollment?: boolean;
 }
 
-const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel }) => {
+const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel, canCapture = true, enrollment = false }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -110,13 +113,22 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel }) => {
   }, [stream]);
 
   const scanFace = () => {
+    if (!canCapture) return;
     setFaceStatus("scanning");
-    setTimeout(() => {
-      // Simulated detection — in production this would use face-api.js or MediaPipe
-      const detected = Math.random() > 0.15;
-      setFaceStatus(detected ? "detected" : "none");
-      if (detected) setTimeout(() => onCapture(true, 1), 800);
-    }, 1800);
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || video.readyState < 2) {
+      setFaceStatus("none");
+      setCamError("Camera is not ready. Please retry.");
+      return;
+    }
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+    if (!context) { setFaceStatus("none"); return; }
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    setFaceStatus("detected");
+    onCapture(canvas.toDataURL("image/jpeg", 0.82));
   };
 
   return (
@@ -131,7 +143,7 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel }) => {
     }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h3 style={{ fontSize: "1rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Camera size={18} color="var(--swift-neon)" /> Camera Verification
+          <Camera size={18} color="var(--swift-neon)" /> {enrollment ? "Face Enrollment" : "Camera Verification"}
         </h3>
         <button className="btn-secondary" onClick={onCancel} style={{ padding: "0.35rem 0.75rem", fontSize: "0.78rem" }}>
           Cancel
@@ -178,7 +190,7 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel }) => {
               className="btn-primary"
               style={{ flex: 1 }}
               onClick={scanFace}
-              disabled={faceStatus === "scanning" || faceStatus === "detected"}
+              disabled={!canCapture || faceStatus === "scanning" || faceStatus === "detected"}
             >
               <Shield size={16} />
               {faceStatus === "scanning" ? "Verifying…" : "Verify Face"}
@@ -285,7 +297,9 @@ const EmployeeAttendanceView: React.FC = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [mode, setMode] = useState<"idle" | "camera">("idle");
+  const [mode, setMode] = useState<"idle" | "camera" | "enroll">("idle");
+  const [faceEnrollment, setFaceEnrollment] = useState<FaceEnrollmentStatus | null>(null);
+  const [faceConsent, setFaceConsent] = useState(false);
   const [gps, setGps] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [gpsLoading, setGpsLoading] = useState(false);
   const [history, setHistory] = useState<AttendanceRecord[]>([]);
@@ -296,14 +310,16 @@ const EmployeeAttendanceView: React.FC = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [status, hist, corr] = await Promise.all([
+      const [status, hist, corr, enrollment] = await Promise.all([
         api.getTodayAttendanceStatus(),
         api.getAttendanceHistory(),
         api.listAttendanceCorrections(),
+        api.getFaceEnrollment(),
       ]);
       setTodayStatus(status);
       setHistory(hist);
       setCorrections(corr);
+      setFaceEnrollment(enrollment);
     } catch (e: any) {
       setErr(e.message);
     } finally {
@@ -344,7 +360,7 @@ const EmployeeAttendanceView: React.FC = () => {
     }
   };
 
-  const handleCameraCheckIn = async (faceDetected: boolean, facesCount: number) => {
+  const handleCameraCheckIn = async (faceImage: string) => {
     if (!gps) { setErr("GPS required for camera check-in. Click 'Get Location' first."); setMode("idle"); return; }
     setMode("idle");
     setActionLoading(true);
@@ -355,8 +371,7 @@ const EmployeeAttendanceView: React.FC = () => {
         latitude: gps.lat,
         longitude: gps.lng,
         gps_accuracy: gps.accuracy,
-        face_detected: faceDetected,
-        faces_count: facesCount,
+        face_image: faceImage,
       });
       setSuccess("✓ Camera check-in with face verification successful!");
       await loadData();
@@ -365,6 +380,31 @@ const EmployeeAttendanceView: React.FC = () => {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const handleFaceEnrollment = async (faceImage: string) => {
+    setMode("idle");
+    setActionLoading(true);
+    setErr(null);
+    try {
+      const status = await api.enrollFace(faceImage, faceConsent);
+      setFaceEnrollment(status);
+      setFaceConsent(false);
+      setSuccess("Face enrolled. Your photo was processed and discarded; only an encrypted template is retained.");
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteFace = async () => {
+    setActionLoading(true);
+    try {
+      setFaceEnrollment(await api.deleteFaceEnrollment());
+      setSuccess("Face enrollment deleted.");
+    } catch (e: any) { setErr(e.message); }
+    finally { setActionLoading(false); }
   };
 
   const handleCheckOut = async () => {
@@ -537,7 +577,7 @@ const EmployeeAttendanceView: React.FC = () => {
                       if (!gps) { getGPS(); setErr("Get location first, then use camera check-in."); return; }
                       setMode("camera");
                     }}
-                    disabled={actionLoading}
+                    disabled={actionLoading || !faceEnrollment?.enabled || !faceEnrollment?.enrolled}
                   >
                     <Camera size={16} /> Camera Check-In
                   </button>
@@ -549,11 +589,35 @@ const EmployeeAttendanceView: React.FC = () => {
             )}
           </div>
 
-          {/* Camera Widget */}
-          {mode === "camera" && (
+          {faceEnrollment && (
+            <div className="swift-card" style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              <strong>Face verification</strong>
+              {!faceEnrollment.enabled ? <span style={{ fontSize: "0.82rem" }}>Face verification is disabled until the backend is configured.</span> : (
+                <>
+                  <span style={{ fontSize: "0.82rem" }}>{faceEnrollment.enrolled ? "Face enrolled for camera check-in." : "Enroll your face before using camera check-in."}</span>
+                  {faceEnrollment.enrolled ? (
+                    <button className="btn-secondary" onClick={handleDeleteFace} disabled={actionLoading}>Delete face enrollment</button>
+                  ) : (
+                    <button className="btn-secondary" onClick={() => { setFaceConsent(false); setMode("enroll"); }} disabled={actionLoading}><Camera size={16} /> Enroll face</button>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Camera capture for enrollment or verification */}
+          {mode === "enroll" && (
+            <p className="swift-card" style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>
+              By selecting ?I consent?, you agree to local face processing for attendance verification. The captured image is discarded after processing; an encrypted face template is stored until you delete it. You can use web check-in without enrollment.
+              <label style={{ display: "block", marginTop: "0.75rem" }}><input type="checkbox" checked={faceConsent} onChange={(e) => setFaceConsent(e.target.checked)} /> I consent to face enrollment</label>
+            </p>
+          )}
+          {mode !== "idle" && (
             <CameraWidget
-              onCapture={handleCameraCheckIn}
+              onCapture={mode === "enroll" ? handleFaceEnrollment : handleCameraCheckIn}
               onCancel={() => setMode("idle")}
+              canCapture={mode !== "enroll" || faceConsent}
+              enrollment={mode === "enroll"}
             />
           )}
 

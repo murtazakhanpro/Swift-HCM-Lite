@@ -48,7 +48,7 @@ export const LoginPage: React.FC = () => {
       }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <img
-            src="/assets/Logo/SWIFT-HCM_LITE_logo.jpg"
+            src="/assets/Logo/App_logo_icon.jpg"
             alt="Swift-HCM Lite"
             style={{ width: "64px", height: "64px", borderRadius: "16px", border: "1px solid var(--border-accent)", marginBottom: "1rem" }}
           />

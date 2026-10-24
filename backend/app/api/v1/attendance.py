@@ -4,12 +4,16 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func, and_, or_
+from starlette.concurrency import run_in_threadpool
 from app.core.database import get_db
 from app.core.deps import get_current_user, require_role, record_audit_log
 from app.models.user import User
 from app.models.employee import Employee
 from app.models.organization import CompanySettings
 from app.models.attendance import Attendance, AttendanceCorrection
+from app.models.face_template import FaceTemplate
+from app.services.face_verification import get_embedding, encrypt_embedding, decrypt_embedding, compare_embeddings, face_verification_enabled
+from app.core.config import settings
 from app.services.attendance_engine import (
     calculate_haversine_distance,
     evaluate_check_in_status,
@@ -17,6 +21,8 @@ from app.services.attendance_engine import (
 )
 from app.schemas.attendance import (
     CheckInRequest,
+    FaceImageRequest,
+    FaceEnrollmentStatus,
     CheckOutRequest,
     AttendanceRecordResponse,
     TodayStatusResponse,
@@ -27,6 +33,52 @@ from app.schemas.attendance import (
 )
 
 router = APIRouter(prefix="/attendance", tags=["Attendance (Module 4)"])
+
+
+@router.get("/face-enrollment", response_model=FaceEnrollmentStatus)
+async def get_face_enrollment_status(
+    current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+):
+    if not current_user.employee_id:
+        return FaceEnrollmentStatus(enrolled=False, enabled=face_verification_enabled())
+    result = await db.execute(select(FaceTemplate).where(FaceTemplate.employee_id == current_user.employee_id))
+    return FaceEnrollmentStatus(enrolled=result.scalar_one_or_none() is not None, enabled=face_verification_enabled())
+
+
+@router.post("/face-enrollment", response_model=FaceEnrollmentStatus)
+async def enroll_face(
+    payload: FaceImageRequest,
+    current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+):
+    if not current_user.employee_id:
+        raise HTTPException(status_code=400, detail="An employee profile is required for face enrollment.")
+    if not payload.consent:
+        raise HTTPException(status_code=400, detail="Explicit consent is required to store a face template.")
+    vector = await run_in_threadpool(get_embedding, payload.image)
+    encrypted = encrypt_embedding(vector)
+    result = await db.execute(select(FaceTemplate).where(FaceTemplate.employee_id == current_user.employee_id))
+    template = result.scalar_one_or_none()
+    if template:
+        template.encrypted_embedding = encrypted
+        template.consented_at = datetime.now()
+    else:
+        db.add(FaceTemplate(employee_id=current_user.employee_id, encrypted_embedding=encrypted))
+    await db.commit()
+    return FaceEnrollmentStatus(enrolled=True, enabled=True)
+
+
+@router.delete("/face-enrollment", response_model=FaceEnrollmentStatus)
+async def delete_face_enrollment(
+    current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+):
+    if not current_user.employee_id:
+        raise HTTPException(status_code=400, detail="An employee profile is required.")
+    result = await db.execute(select(FaceTemplate).where(FaceTemplate.employee_id == current_user.employee_id))
+    template = result.scalar_one_or_none()
+    if template:
+        await db.delete(template)
+        await db.commit()
+    return FaceEnrollmentStatus(enrolled=False, enabled=face_verification_enabled())
 
 def format_attendance_response(att: Attendance, emp: Optional[Employee] = None) -> AttendanceRecordResponse:
     employee_obj = emp or att.employee
@@ -126,12 +178,21 @@ async def check_in(
 
     # 3. Camera & Geofence Verification (Section 5)
     if payload.source == "camera":
-        # Face detection check: exactly one face in the frame
-        if payload.faces_count != 1 or not payload.face_detected:
+        if not payload.face_image:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Camera check-in rejected: exactly one face must be detected in the camera frame."
+                detail="Camera check-in requires a captured face image."
             )
+
+        template_res = await db.execute(select(FaceTemplate).where(FaceTemplate.employee_id == current_user.employee_id))
+        face_template = template_res.scalar_one_or_none()
+        if not face_template:
+            raise HTTPException(status_code=409, detail="Enroll your face with consent before camera check-in.")
+
+        current_vector = await run_in_threadpool(get_embedding, payload.face_image)
+        similarity = compare_embeddings(current_vector, decrypt_embedding(face_template.encrypted_embedding))
+        if similarity < settings.FACE_MATCH_THRESHOLD:
+            raise HTTPException(status_code=403, detail="Face did not match your enrolled template. Try again or use web check-in.")
 
         # GPS accuracy check: must be <= 100 meters
         if payload.gps_accuracy is None or payload.gps_accuracy > 100.0:

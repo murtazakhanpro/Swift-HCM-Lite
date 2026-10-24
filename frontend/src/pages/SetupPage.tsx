@@ -102,7 +102,7 @@ export const SetupPage: React.FC = () => {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.85rem", marginBottom: "1.5rem" }}>
               <img
-                src="/assets/Logo/SWIFT-HCM_LITE_logo.jpg"
+                src="/assets/Logo/App_logo_icon.jpg"
                 alt="Swift-HCM Lite"
                 style={{ width: "48px", height: "48px", borderRadius: "12px", border: "1px solid var(--border-accent)" }}
               />

@@ -182,7 +182,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
         {/* Brand Header */}
         <div style={{ padding: "1.25rem 1.5rem", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <img
-            src="/assets/Logo/SWIFT-HCM_LITE_logo.jpg"
+            src="/assets/Logo/App_logo_icon.jpg"
             alt="Swift-HCM Lite"
             style={{ width: "36px", height: "36px", borderRadius: "8px", objectFit: "cover", border: "1px solid var(--border-accent)" }}
           />

@@ -18,6 +18,8 @@ export interface AttendanceRecord {
   face_verified: boolean;
 }
 
+export interface FaceEnrollmentStatus { enrolled: boolean; enabled: boolean }
+
 export interface TodayStatusResponse {
   has_checked_in: boolean;
   has_checked_out: boolean;
@@ -418,13 +420,22 @@ class ApiService {
     latitude?: number;
     longitude?: number;
     gps_accuracy?: number;
-    face_detected?: boolean;
-    faces_count?: number;
+    face_image?: string;
   }): Promise<AttendanceRecord> {
     return this.request<AttendanceRecord>("/attendance/check-in", {
       method: "POST",
       body: JSON.stringify(payload),
     });
+  }
+
+  async getFaceEnrollment(): Promise<FaceEnrollmentStatus> {
+    return this.request<FaceEnrollmentStatus>("/attendance/face-enrollment");
+  }
+  async enrollFace(image: string, consent: boolean): Promise<FaceEnrollmentStatus> {
+    return this.request<FaceEnrollmentStatus>("/attendance/face-enrollment", { method: "POST", body: JSON.stringify({ image, consent }) });
+  }
+  async deleteFaceEnrollment(): Promise<FaceEnrollmentStatus> {
+    return this.request<FaceEnrollmentStatus>("/attendance/face-enrollment", { method: "DELETE" });
   }
 
   async checkOut(payload: { latitude?: number; longitude?: number }): Promise<AttendanceRecord> {

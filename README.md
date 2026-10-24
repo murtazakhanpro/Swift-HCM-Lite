@@ -103,7 +103,7 @@ The nine product areas have implementations in the repository. Passing tests pro
 
 ### Local environment
 
-Copy `.env.example` to `.env`. Set a unique `JWT_SECRET` with at least 32 characters before using Docker or a production environment. Keep `.env` out of Git. `GEMINI_API_KEY` is optional for core HR workflows and must remain server-side. Set `CORS_ORIGINS` to the exact frontend origins when hosting frontend and backend separately.
+Use the project-root `.env` as the single environment configuration for local development and Docker. Keep it out of Git. Set a unique `JWT_SECRET` (at least 32 characters) for Docker/production. `GEMINI_API_KEY` stays server-side; `AI_MODEL` selects the Gemini model used by the assistant. The backend reads this same root `.env`, so the configured Gemini key and model apply consistently. Set `CORS_ORIGINS` to the exact frontend origins when hosting frontend and backend separately.
 
 The development frontend uses relative `/api/v1` requests and Vite proxies them to `http://127.0.0.1:8000`. The Docker frontend proxies API requests through Nginx.
 
