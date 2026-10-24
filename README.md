@@ -8,7 +8,7 @@ Built by **[Lyntica](https://www.lyntica.com/)**
 
 ## 👥 Designed & Developed By
 
-* **Murtaza Ali Khan** — AI/ML & Full-Stack Engineering Lead  
+* **Murtaza Ali** — AI/ML & Full-Stack Engineering Lead  
   [Portfolio](https://www.murtazaalikhan.com/) • [GitHub](https://www.github.com/murtazakhanpro) • [LinkedIn](https://www.linkedin.com/in/murtazakhanworld) • [Hugging Face](https://huggingface.co/murtazakhanpro)
 
 ---
