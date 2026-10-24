@@ -6,12 +6,10 @@ Built by **[Lyntica](https://www.lyntica.com/)**
 
 ---
 
-## 👥 Engineering & Leadership Team
+## 👥 Designed & Developed By
 
-* **Murtaza Ali Khan** — AI/ML & Data Science Lead  
+* **Murtaza Ali Khan** — AI/ML & Full-Stack Engineering Lead  
   [Portfolio](https://www.murtazaalikhan.com/) • [GitHub](https://www.github.com/murtazakhanpro) • [LinkedIn](https://www.linkedin.com/in/murtazakhanpro) • [Hugging Face](https://huggingface.co/murtazakhanpro)
-* **Fiza Baneen Khan** — Modern Web & App Engineering Lead  
-  [Portfolio](https://www.fizabaneen.com/) • [GitHub](https://www.github.com/fizabaneen) • [LinkedIn](https://www.linkedin.com/in/fizabaneen)
 
 ---
 
