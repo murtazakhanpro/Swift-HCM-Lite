@@ -27,14 +27,17 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    volumes:
+      - face_model_cache:/root/.cache/huggingface
     environment:
       - PORT=8000
       - DATABASE_URL=postgresql+asyncpg://postgres:postgrespassword@db:5432/swift_hcm
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - AI_MODEL=${AI_MODEL:-gemini-3.5-flash-lite}
       - FACE_ENCRYPTION_KEY=${FACE_ENCRYPTION_KEY}
-      - FACE_MODEL_ID=${FACE_MODEL_ID:-librefacerec-l.onnx}
-      - FACE_MATCH_THRESHOLD=${FACE_MATCH_THRESHOLD:-0.4}
+      - FACE_MODEL_ID=${FACE_MODEL_ID:-fal/AuraFace-v1}
+      - FACE_MODEL_REVISION=${FACE_MODEL_REVISION:-main}
+      - FACE_MATCH_THRESHOLD=${FACE_MATCH_THRESHOLD:-0.65}
       - JWT_SECRET=${JWT_SECRET:?Set a unique JWT_SECRET of at least 32 characters in .env}
       - ENVIRONMENT=production
     depends_on:
@@ -54,3 +57,4 @@ services:
 
 volumes:
   postgres_data:
+  face_model_cache:
