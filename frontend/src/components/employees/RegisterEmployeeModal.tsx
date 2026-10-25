@@ -1,6 +1,27 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { X, UserPlus, AlertCircle, CheckCircle2 } from "lucide-react";
 import { api, type Department, type Designation } from "../../services/api";
+
+const compressFaceImage = (file: File): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onerror = () => reject(new Error("Could not read the selected image."));
+  reader.onload = () => {
+    const image = new Image();
+    image.onerror = () => reject(new Error("The selected file is not a valid image."));
+    image.onload = () => {
+      const scale = Math.min(1, 1024 / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(image.width * scale);
+      canvas.height = Math.round(image.height * scale);
+      const context = canvas.getContext("2d");
+      if (!context) return reject(new Error("Image processing is unavailable in this browser."));
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.84));
+    };
+    image.src = String(reader.result);
+  };
+  reader.readAsDataURL(file);
+});
 
 interface Props {
   isOpen: boolean;
@@ -32,8 +53,19 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [faceImage, setFaceImage] = useState<string | null>(null);
+  const [faceConsent, setFaceConsent] = useState(false);
+  const faceFileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
+
+  const closeModal = () => {
+    setFaceImage(null);
+    setFaceConsent(false);
+    setError(null);
+    if (faceFileInputRef.current) faceFileInputRef.current.value = "";
+    onClose();
+  };
 
   const filteredDesignations = designations.filter(
     (d) => !formData.department_id || d.department_id === formData.department_id
@@ -47,6 +79,10 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
       setError("Basic salary must be greater than 0");
       return;
     }
+    if (faceImage && !faceConsent) {
+      setError("Confirm the employee has given consent before enrolling their face.");
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -54,7 +90,12 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
         ...formData,
         department_id: formData.department_id || null,
         designation_id: formData.designation_id || null,
+        face_image: faceImage,
+        face_consent: faceConsent,
       });
+      setFaceImage(null);
+      setFaceConsent(false);
+      if (faceFileInputRef.current) faceFileInputRef.current.value = "";
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -101,7 +142,7 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
               Register Employee & Create Login
             </h2>
           </div>
-          <button onClick={onClose} className="btn-secondary" style={{ padding: "0.35rem" }}>
+          <button onClick={closeModal} className="btn-secondary" style={{ padding: "0.35rem" }}>
             <X size={18} />
           </button>
         </div>
@@ -280,8 +321,47 @@ export const RegisterEmployeeModal: React.FC<Props> = ({
             />
           </div>
 
+          <div style={{ padding: "1rem", borderRadius: "10px", background: "var(--bg-surface-0)", border: "1px solid var(--border-subtle)" }}>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.4rem" }}>
+              Face enrollment (optional)
+            </label>
+            <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "0.75rem" }}>
+              Capture or upload one clear, front-facing photo. The server stores an encrypted face template, not the photo.
+            </p>
+            <input
+              ref={faceFileInputRef}
+              type="file"
+              accept="image/*"
+              capture="user"
+              className="swift-input"
+              onChange={async (event) => {
+                const file = event.target.files?.[0];
+                setError(null);
+                if (!file) { setFaceImage(null); setFaceConsent(false); return; }
+                if (file.size > 10 * 1024 * 1024) {
+                  setFaceImage(null);
+                  setFaceConsent(false);
+                  setError("Choose an image smaller than 10 MB.");
+                  return;
+                }
+                try { setFaceImage(await compressFaceImage(file)); }
+                catch (err: any) { setFaceImage(null); setFaceConsent(false); setError(err.message || "Could not process face image."); }
+              }}
+            />
+            {faceImage && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.75rem" }}>
+                <img src={faceImage} alt="Face enrollment preview" style={{ width: "64px", height: "64px", objectFit: "cover", borderRadius: "8px" }} />
+                <span style={{ fontSize: "0.75rem", color: "var(--status-present)" }}>Photo ready for face verification</span>
+              </div>
+            )}
+            <label style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", marginTop: "0.75rem", fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+              <input type="checkbox" checked={faceConsent} disabled={!faceImage} onChange={(event) => setFaceConsent(event.target.checked)} style={{ accentColor: "var(--swift-neon)" }} />
+              I confirm the employee gave explicit consent to store an encrypted face template for attendance verification.
+            </label>
+          </div>
+
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1rem" }}>
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={closeModal} className="btn-secondary">
               Cancel
             </button>
             <button type="submit" disabled={isLoading} className="btn-primary">

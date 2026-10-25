@@ -16,6 +16,8 @@ class EmployeeBase(BaseModel):
 class EmployeeCreate(EmployeeBase):
     employee_code: Optional[str] = None  # If not provided, server auto-generates
     temporary_password: Optional[str] = "Welcome@2026"
+    face_image: Optional[str] = Field(None, min_length=100, max_length=2_800_000)
+    face_consent: bool = False
 
 class EmployeeUpdate(BaseModel):
     first_name: Optional[str] = None

@@ -127,7 +127,7 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel, canCap
     const context = canvas.getContext("2d");
     if (!context) { setFaceStatus("none"); return; }
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    setFaceStatus("detected");
+    setFaceStatus("scanning");
     onCapture(canvas.toDataURL("image/jpeg", 0.82));
   };
 
@@ -179,8 +179,8 @@ const CameraWidget: React.FC<CameraWidgetProps> = ({ onCapture, onCancel, canCap
               fontSize: "0.75rem", fontWeight: 600, color: faceStatus === "detected" ? "var(--status-present)" : faceStatus === "none" ? "var(--status-absent)" : "var(--swift-neon)",
             }}>
               {faceStatus === "idle" && "Position face in frame"}
-              {faceStatus === "scanning" && "Scanning…"}
-              {faceStatus === "detected" && "✓ Face Verified"}
+              {faceStatus === "scanning" && "Sending to server..."}
+              {faceStatus === "detected" && "Image captured"}
               {faceStatus === "none" && "No face detected"}
             </div>
           </div>
@@ -366,12 +366,11 @@ const EmployeeAttendanceView: React.FC = () => {
     setActionLoading(true);
     setErr(null);
     try {
-      await api.checkIn({
-        source: "camera",
+      await api.faceCheck({
+        image: faceImage,
         latitude: gps.lat,
         longitude: gps.lng,
         gps_accuracy: gps.accuracy,
-        face_image: faceImage,
       });
       setSuccess("✓ Camera check-in with face verification successful!");
       await loadData();

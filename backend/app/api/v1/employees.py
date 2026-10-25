@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Query
 from fastapi.responses import Response
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func, or_
@@ -17,6 +18,8 @@ from app.models.organization import Department, Designation
 from app.models.attendance import Attendance
 from app.models.leave import LeaveRequest
 from app.models.payroll import Payslip
+from app.models.face_template import FaceTemplate
+from app.services.face_verification import get_embedding, encrypt_embedding
 from app.schemas.employee import (
     EmployeeCreate,
     EmployeeUpdate,
@@ -146,6 +149,15 @@ async def register_employee(
         if not desig.scalar_one_or_none():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Specified Designation not found")
 
+    if data.face_image and not data.face_consent:
+        raise HTTPException(status_code=400, detail="Explicit consent is required to enroll an employee face.")
+    if data.face_consent and not data.face_image:
+        raise HTTPException(status_code=400, detail="Provide a face image when face enrollment consent is selected.")
+    encrypted_face_embedding = None
+    if data.face_image:
+        face_vector = await run_in_threadpool(get_embedding, data.face_image)
+        encrypted_face_embedding = encrypt_embedding(face_vector)
+
     # 4. Create Employee
     new_employee = Employee(
         employee_code=emp_code,
@@ -174,6 +186,8 @@ async def register_employee(
         must_change_password=True
     )
     db.add(employee_user)
+    if encrypted_face_embedding:
+        db.add(FaceTemplate(employee_id=new_employee.id, encrypted_embedding=encrypted_face_embedding))
     await db.commit()
     await db.refresh(new_employee)
 
@@ -188,7 +202,8 @@ async def register_employee(
             "employee_code": new_employee.employee_code,
             "email": new_employee.email,
             "name": f"{new_employee.first_name} {new_employee.last_name}",
-            "basic_salary": new_employee.basic_salary
+            "basic_salary": new_employee.basic_salary,
+            "face_enrolled": bool(encrypted_face_embedding)
         },
         request=request
     )

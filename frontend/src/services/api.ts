@@ -428,6 +428,18 @@ class ApiService {
     });
   }
 
+  async faceCheck(payload: {
+    image: string;
+    latitude: number;
+    longitude: number;
+    gps_accuracy: number;
+  }): Promise<AttendanceRecord> {
+    return this.request<AttendanceRecord>("/attendance/face-check", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
   async getFaceEnrollment(): Promise<FaceEnrollmentStatus> {
     return this.request<FaceEnrollmentStatus>("/attendance/face-enrollment");
   }

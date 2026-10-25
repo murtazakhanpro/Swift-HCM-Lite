@@ -22,6 +22,7 @@ from app.services.attendance_engine import (
 from app.schemas.attendance import (
     CheckInRequest,
     FaceImageRequest,
+    FaceCheckRequest,
     FaceEnrollmentStatus,
     CheckOutRequest,
     AttendanceRecordResponse,
@@ -254,6 +255,23 @@ async def check_in(
     emp = emp_res.scalar_one()
 
     return format_attendance_response(new_attendance, emp)
+
+
+@router.post("/face-check", response_model=AttendanceRecordResponse)
+async def face_check(
+    payload: FaceCheckRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Verify the signed-in employee's face and record camera attendance."""
+    check_in_payload = CheckInRequest(
+        source="camera",
+        latitude=payload.latitude,
+        longitude=payload.longitude,
+        gps_accuracy=payload.gps_accuracy,
+        face_image=payload.image,
+    )
+    return await check_in(check_in_payload, current_user=current_user, db=db)
 
 @router.post("/check-out", response_model=AttendanceRecordResponse)
 async def check_out(

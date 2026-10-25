@@ -115,6 +115,8 @@ The nine product areas have implementations in the repository. Passing tests pro
 
 Use the project-root `.env` as the single environment configuration for local development and Docker. Keep it out of Git. Set a unique `JWT_SECRET` (at least 32 characters) for Docker/production. `GEMINI_API_KEY` stays server-side; `AI_MODEL` selects the Gemini model used by the assistant. The backend reads this same root `.env`, so the configured Gemini key and model apply consistently. Set `CORS_ORIGINS` to the exact frontend origins when hosting frontend and backend separately.
 
+Attendance face verification uses the [Apache-2.0 AuraFace ONNX model](https://huggingface.co/fal/AuraFace-v1). Set `FACE_ENCRYPTION_KEY` to a Fernet key, keep `FACE_MODEL_ID=fal/AuraFace-v1`, and use `FACE_MATCH_THRESHOLD=0.65` as the starting cosine-similarity threshold. The first enrollment or face check downloads only the detector and recognition files into the Hugging Face cache; to pre-download them, run `python backend/scripts/download_face_model.py`. Employees can enroll during HR registration when explicit consent is provided, or enroll later from the Attendance page. Images are processed by the backend and discarded; encrypted 512-dimensional templates are stored in the database. Existing templates created with a previous model must be re-enrolled. Docker persists the model cache in the `face_model_cache` volume.
+
 The development frontend uses relative `/api/v1` requests and Vite proxies them to `http://127.0.0.1:8000`. The Docker frontend proxies API requests through Nginx.
 
 Backend operational endpoints are `/api/v1/health` and `/api/v1/ready`; the latter returns HTTP 503 when the database cannot be reached.

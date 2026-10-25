@@ -26,8 +26,9 @@ class Settings(BaseSettings):
 
     # Face verification is disabled until a Fernet key is explicitly configured.
     FACE_ENCRYPTION_KEY: str = Field(default="")
-    FACE_MODEL_ID: str = Field(default="librefacerec-l.onnx")
-    FACE_MATCH_THRESHOLD: float = Field(default=0.4, ge=0.0, le=1.0)
+    FACE_MODEL_ID: str = Field(default="fal/AuraFace-v1")
+    FACE_MODEL_REVISION: str = Field(default="main")
+    FACE_MATCH_THRESHOLD: float = Field(default=0.65, ge=0.0, le=1.0)
 
     @model_validator(mode="after")
     def validate_production_secrets(self):

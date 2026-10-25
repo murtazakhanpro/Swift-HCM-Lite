@@ -13,6 +13,12 @@ class FaceImageRequest(BaseModel):
     image: str = Field(..., min_length=100, max_length=2_800_000)
     consent: bool = False
 
+class FaceCheckRequest(BaseModel):
+    image: str = Field(..., min_length=100, max_length=2_800_000)
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    gps_accuracy: Optional[float] = None
+
 class FaceEnrollmentStatus(BaseModel):
     enrolled: bool
     enabled: bool
