@@ -16,6 +16,14 @@ Built by **[Lyntica](https://www.lyntica.com/)**
 
 ---
 
+## App Snapshot
+
+![Swift-HCM Lite admin dashboard](SnapShots/2.PNG)
+
+The admin dashboard brings workforce, attendance, and payroll summaries together, with navigation to organization setup, employee management, leave, audit logs, and the AI assistant. The screenshot shows a fresh workspace; its zero counts are expected because the app starts without seeded demo data.
+
+---
+
 ##  Team
 
 * **Murtaza Ali Khan**
