@@ -26,9 +26,9 @@ The admin dashboard brings workforce, attendance, and payroll summaries together
 
 ##  Team
 
-* **Murtaza Ali Khan**
+* **Murtaza Ali **
   <br />
-  <img src="SnapShots/murtaza_witishGrey_Backgroud.jpg" alt="Murtaza Ali Khan" width="110" />
+  <img src="SnapShots/murtaza_witishGrey_Backgroud.jpg" alt="Murtaza Ali Khan" width="140" />
   <br />
   **About:** Building Swift-HCM Lite with the Lyntica team.
   [Portfolio](https://www.murtazalikhan.com) • [GitHub](https://github.com/murtazakhanpro) • [LinkedIn](https://www.linkedin.com/in/murtazakhanpro) • [Hugging Face](https://huggingface.co/murtazakhanpro)
